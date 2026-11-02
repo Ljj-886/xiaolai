@@ -1,0 +1,68 @@
+<wxs src="../../utils/icon.wxs" module="ico" />
+<view class="page">
+  <view class="cat-layout">
+
+    <!-- ================= 左栏：分类导航（独立滚动，与右栏互不影响） =================
+         scroll-into-view：切换分类后把选中项滚进视口（10+ 项总高远超一屏，
+         否则点了靠后的分类，选中态会停在视口外，看不出选了什么） -->
+    <scroll-view class="cat-side" scroll-y scroll-into-view="{{scrollIntoView}}" scroll-with-animation>
+      <!-- 白底画在滚动区盒子自身：分类不满一屏时也不会在底部露出页面底色 -->
+      <view class="cat-side-inner">
+        <view wx:for="{{cats}}" wx:key="key"
+          id="cat-{{item.key || 'all'}}"
+          class="cat-side-item {{item.key === current ? 'active' : ''}}"
+          bindtap="selectCat" data-key="{{item.key}}">
+          <!-- 图标落在手绘卡通 pastel 气泡里：bg 由 CATEGORIES 按图标实测色分配，内联注入底色 -->
+          <image class="cat-side-icon" src="{{ico.cat(item.key)}}" mode="aspectFit" style="background-color:{{item.bg}}; --tilt: {{item.tilt}}"/>
+          <text class="text-sm">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- ================= 右栏：排序条 + 商品列表（独立滚动） ================= -->
+    <view class="cat-main">
+
+      <view class="cat-sortbar">
+        <view class="cat-sortbar-item {{sort === 'new' ? 'active' : ''}}" bindtap="setSort" data-sort="new" hover-class="press" hover-stay-time="80">最新</view>
+        <view class="cat-sortbar-item {{sort === 'priceAsc' ? 'active' : ''}}" bindtap="setSort" data-sort="priceAsc" hover-class="press" hover-stay-time="80">价低</view>
+        <view class="cat-sortbar-item {{sort === 'priceDesc' ? 'active' : ''}}" bindtap="setSort" data-sort="priceDesc" hover-class="press" hover-stay-time="80">价高</view>
+        <view class="cat-sortbar-item {{sort === 'hot' ? 'active' : ''}}" bindtap="setSort" data-sort="hot" hover-class="press" hover-stay-time="80">热门</view>
+      </view>
+
+      <scroll-view class="cat-list" scroll-y lower-threshold="120" bindscrolltolower="onReachBottom">
+        <view class="cat-list-inner">
+          <view class="cat-grid">
+            <view class="cat-cell" wx:for="{{list}}" wx:key="_id">
+              <goods-card item="{{item}}" bind:tap="goDetail" data-id="{{item._id}}"/>
+            </view>
+          </view>
+          <!-- ⚠️ 首屏四态必须**互斥**：此前这里写成两组独立的 wx:if/wx:elif 链，
+               导致「加载失败」与「点击加载更多」会同时渲染（loadError 为真时
+               loading=false，于是继续落到下面那组的 hasMore 分支，而 hasMore 还停留在
+               上一次成功请求的值）。统一改为单链 wx:if / wx:elif / wx:elif / wx:else。 -->
+          <!-- 首屏骨架屏：仅真正首次加载（无快照）才显示，避免切回 tab 时一直转圈 -->
+          <view wx:if="{{loading && !list.length}}" class="cat-skeleton">
+            <view class="cat-skel-card" wx:for="{{skeletonN}}" wx:key="*this">
+              <view class="cat-skel-img"></view>
+              <view class="cat-skel-line w70"></view>
+              <view class="cat-skel-line w40"></view>
+            </view>
+          </view>
+          <view wx:elif="{{loadError && !list.length}}">
+            <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+          </view>
+          <view wx:elif="{{!list.length}}">
+            <empty icon="🔍" title="该分类暂无商品" desc="切换其他分类或直接搜索"/>
+          </view>
+          <block wx:else>
+            <view wx:if="{{loading}}" class="cat-tip">加载中…</view>
+            <view wx:elif="{{loadError}}" class="cat-tip err" bindtap="retry">加载失败，点击重试</view>
+            <view wx:elif="{{hasMore}}" class="cat-tip" bindtap="loadMore">点击加载更多</view>
+            <view wx:else class="cat-tip">— 没有更多了 —</view>
+          </block>
+        </view>
+      </scroll-view>
+    </view>
+
+  </view>
+</view>

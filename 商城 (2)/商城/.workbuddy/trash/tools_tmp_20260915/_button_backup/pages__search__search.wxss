@@ -1,0 +1,44 @@
+.page { min-height: 100vh; }
+.search-row {
+  display: flex; align-items: center; gap: 16rpx;
+  padding: 24rpx;
+}
+.search-input {
+  background: #fff; border-radius: 36rpx;
+  height: 72rpx; padding: 0 24rpx;
+  display: flex; align-items: center; gap: 12rpx;
+}
+.search-input input { font-size: 28rpx; }
+.cancel { color: var(--text-2); font-size: 28rpx; }
+
+.filter { margin: 16rpx 24rpx; }
+.chip-scroll { white-space: nowrap; width: 100%; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 16rpx; }
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8rpx 22rpx; border-radius: 28rpx;
+  background: #f2eadc; color: var(--text-2); font-size: 24rpx;
+  border: 3rpx solid var(--ink);
+  line-height: 1.4;
+}
+.chip.on { background: #e8542f; color: #fff; }
+.chip.reset { background: #fff; border: 3rpx solid var(--ink); color: var(--text-2); }
+.price-row { align-items: center; }
+.price-ipt {
+  width: 160rpx; height: 56rpx; padding: 0 18rpx;
+  background: #f2eadc; border-radius: 28rpx; font-size: 24rpx; text-align: center;
+}
+.price-sep { color: var(--text-3); font-size: 24rpx; }
+.price-apply { background: #e8542f; color: #fff; }
+
+.history, .hot { margin: 16rpx 24rpx; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.tag-list .tag { margin: 0; cursor: pointer; }
+
+.result { padding: 16rpx 24rpx; }
+.result-head { padding: 8rpx 0 16rpx; }
+.grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+.grid-cell { width: 100%; }

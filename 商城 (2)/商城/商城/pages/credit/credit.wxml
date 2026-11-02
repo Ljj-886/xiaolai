@@ -1,0 +1,67 @@
+<view class="page">
+  <nav-bar title="我的信用" back/>
+  <view wx:if="{{error}}" class="card mt-24 text-center" bindtap="fetch">
+    <text class="text-3 text-sm">{{error}}，点击重试</text>
+  </view>
+  <!-- 分数头部 -->
+  <view class="card score-card">
+    <view class="score-ring">
+      <view class="score-num">{{credit}}</view>
+      <view class="score-label">信用分</view>
+    </view>
+    <view class="score-side">
+      <view class="text-bold text-lg">{{level}}</view>
+      <view class="text-3 text-sm mt-8">{{levelDesc}}</view>
+      <view class="score-meta mt-16">
+        <view class="meta-item">
+          <text class="meta-num">{{reviewCount}}</text>
+          <text class="text-3 text-sm">评价数</text>
+        </view>
+        <view class="meta-item" wx:if="{{avgScore}}">
+          <text class="meta-num">{{avgScore}}</text>
+          <text class="text-3 text-sm">平均星级</text>
+        </view>
+        <view class="meta-item">
+          <text class="meta-num">{{soldCount}}</text>
+          <text class="text-3 text-sm">卖出</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 规则 -->
+  <view class="card mt-24">
+    <view class="text-bold mb-16">信用规则</view>
+    <view class="rule" wx:for="{{rules}}" wx:key="title">
+      <text class="rule-icon">{{item.icon}}</text>
+      <view class="flex-1">
+        <view class="text-bold text-sm">{{item.title}}</view>
+        <view class="text-3 text-sm mt-4">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收到的评价 -->
+  <view class="card mt-24">
+    <view class="text-bold mb-16">收到的评价（{{reviewCount}}）</view>
+    <block wx:if="{{reviews.length}}">
+      <view class="review" wx:for="{{reviews}}" wx:key="id">
+        <view class="flex-between">
+          <view class="flex-row" style="display:flex;align-items:center;gap:8rpx">
+            <text class="tag {{item.role === '卖家' ? 'tag-warn' : 'tag-success'}}">{{item.role}}</text>
+            <text class="stars">{{item.score >= 1 ? '★' : '☆'}}{{item.score >= 2 ? '★' : '☆'}}{{item.score >= 3 ? '★' : '☆'}}{{item.score >= 4 ? '★' : '☆'}}{{item.score >= 5 ? '★' : '☆'}}</text>
+          </view>
+          <text class="text-3 text-sm">{{item.createdAtText}}</text>
+        </view>
+        <view class="text-2 text-sm mt-8">商品：{{item.goodsTitle}}</view>
+        <view wx:if="{{item.tags.length}}" class="mt-8" style="display:flex;gap:8rpx;flex-wrap:wrap">
+          <text class="tag" wx:for="{{item.tags}}" wx:for-item="tg" wx:key="*this">{{tg}}</text>
+        </view>
+        <view wx:if="{{item.content}}" class="text-2 mt-8">"{{item.content}}"</view>
+      </view>
+    </block>
+    <view wx:else class="text-3 text-sm text-center" style="padding:30rpx 0">
+      还没有收到评价，完成自提后对方可以给你评价
+    </view>
+  </view>
+</view>

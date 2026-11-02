@@ -1,0 +1,95 @@
+.page { min-height: 100vh; padding: 16rpx 24rpx env(safe-area-inset-bottom); }
+
+.tabs {
+  white-space: nowrap;
+  background: #F5EADA;
+  border: 3rpx solid var(--ink);
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 16rpx;
+}
+.tab {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 30rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  margin-right: 10rpx;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.tab.on { background: var(--primary); color: #fff; font-weight: 500; border-color: var(--ink); }
+
+.seg {
+  display: flex; background: #fff; border: 3rpx solid var(--ink); border-radius: 30rpx; padding: 6rpx; margin-bottom: 16rpx;
+}
+.seg-item {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 16rpx; margin: 0 6rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.seg-item.on {
+  background: var(--primary); color: #fff; font-weight: 500;
+  border-color: var(--ink);
+}
+
+.list { padding-bottom: 24rpx; }
+.item { margin-bottom: 16rpx; padding: 24rpx; }
+.item .evi { width: 150rpx; height: 150rpx; border-radius: 12rpx; background: #f5eada; margin: 8rpx 12rpx 0 0; }
+/* 认证材料图加载失败（临时链接过期等）：显示打破的图片标识，避免整块空白无从判断 */
+.item .evi-err { opacity: .45; border: 2rpx dashed var(--ink-3, #B39B80); }
+.rep-target {
+  display: flex; gap: 16rpx; align-items: center;
+  margin-top: 16rpx; padding: 16rpx;
+  background: #fbf6ec; border: 2rpx solid var(--line); border-radius: 12rpx;
+}
+/* 可点击跳转的上下文块：给出明确的"可点击"暗示 */
+.rep-clickable { border-color: var(--ink-3); }
+.rep-cover { width: 120rpx; height: 120rpx; border-radius: 10rpx; background: #f5eada; flex-shrink: 0; border: 2rpx solid var(--line); }
+.rep-cover-empty {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-3); font-size: 22rpx;
+}
+.rep-info { flex: 1; display: flex; flex-direction: column; gap: 6rpx; min-width: 0; }
+.rep-title { font-size: 26rpx; color: var(--ink); font-weight: 500; word-break: break-all; }
+.rep-meta { display: flex; align-items: center; gap: 10rpx; flex-wrap: wrap; }
+.rep-jump { font-size: 22rpx; color: var(--primary); }
+
+/* 处理轨迹（已处理归档）：结论/备注/时间统一为键值行 */
+.trail {
+  margin-top: 14rpx; padding: 16rpx 18rpx;
+  background: #F7F4EC; border: 2rpx solid var(--line); border-radius: 12rpx;
+}
+.trail-row { display: flex; gap: 12rpx; align-items: flex-start; font-size: 25rpx; line-height: 1.5; }
+.trail-row + .trail-row { margin-top: 8rpx; }
+.trail-k { flex-shrink: 0; width: 72rpx; color: var(--ink-3); }
+.trail-v { flex: 1; color: var(--ink-2); word-break: break-all; }
+.trail-hint { margin-top: 10rpx; font-size: 23rpx; color: var(--primary); }
+
+/* 举报描述 / 反馈内容：长描述或无空格长串（链接、openid）必须能换行，否则会撑破卡片 */
+.item .text-2 { word-break: break-all; }
+.item .actions { display: flex; gap: 16rpx; margin-top: 16rpx; flex-wrap: wrap; justify-content: flex-end; }
+
+.btn-sm {
+  padding: 8rpx 24rpx; font-size: 24rpx; border-radius: 30rpx; text-align: center; border: 1rpx solid var(--line);
+}
+.btn-sm.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-sm.btn-ghost { background: #fff; color: var(--primary); border-color: var(--primary); }
+.btn-sm.btn-line { background: var(--primary-light); color: var(--primary); border-color: var(--primary-light); }
+.btn-sm.btn-danger { background: #fff1f0; color: var(--danger); border-color: #ffa39e; }
+
+.tag {
+  display: inline-block; padding: 4rpx 14rpx; border-radius: 8rpx; font-size: 22rpx; margin-left: 12rpx;
+}
+.tag-success { background: #DEF7F2; color: var(--success); }
+.tag-warn { background: #FFF1D6; color: var(--warning); }
+.tag-danger { background: #fff1f0; color: var(--danger); }
+.tag-gray { background: #f2eadc; color: var(--text-2); }
+.tag-line { background: #fff; border: 2rpx solid var(--line); color: var(--text-2); }
+
+.empty { text-align: center; padding: 80rpx 32rpx; color: var(--text-3); }
+.empty .title { font-size: 28rpx; }
+.loading { text-align: center; padding: 24rpx; color: var(--text-3); font-size: 24rpx; }

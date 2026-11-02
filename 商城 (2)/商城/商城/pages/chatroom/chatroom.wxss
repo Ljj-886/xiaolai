@@ -1,0 +1,165 @@
+.page {
+  display: flex; flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  /* emoji/plus 面板用 position:absolute 浮在消息区之上，
+     不挤压 msg-list，消息保持完整可滚动 */
+  position: relative;
+}
+.goods-bar {
+  display: flex; align-items: center; gap: 16rpx;
+  margin: 16rpx;
+  padding: 16rpx;
+}
+.g-cover { width: 96rpx; height: 96rpx; border-radius: 12rpx; background: #f0e4d0; }
+
+.msg-list {
+  flex: 1; padding: 0 24rpx 24rpx;
+  min-height: 0;
+}
+.msg { display: flex; flex-direction: column; margin-top: 24rpx; }
+.msg.mine { align-items: flex-end; }
+.msg.peer { align-items: flex-start; }
+.bubble {
+  max-width: 70%;
+  padding: 18rpx 24rpx; border-radius: 20rpx;
+  font-size: 28rpx; line-height: 1.5;
+  word-break: break-all;
+}
+.bubble-img {
+  padding: 8rpx; background: transparent !important;
+}
+.bubble-img image {
+  max-width: 480rpx; max-height: 480rpx;
+  border-radius: 16rpx;
+  display: block;
+}
+.msg.mine .bubble:not(.bubble-img) {
+  background: #e8542f; color: #fff;
+  border-bottom-right-radius: 6rpx;
+}
+.msg.peer .bubble:not(.bubble-img) {
+  background: #fff; color: var(--text);
+  border-bottom-left-radius: 6rpx;
+}
+.time { font-size: 22rpx; color: var(--text-3); margin-top: 6rpx; }
+/* 乐观发送状态：pending 半透明，failed 变红并提示 */
+.msg.pending { opacity: .55; }
+.msg-state { font-size: 22rpx; color: var(--text-3); }
+.msg-failed { color: #FF3B30; }
+
+.empty-hint {
+  text-align: center; color: var(--text-3);
+  padding: 80rpx 0; font-size: 26rpx;
+}
+
+.input-bar {
+  display: flex; align-items: center; gap: 12rpx;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)) 24rpx;
+  background: #fff;
+  border-top: 1rpx solid var(--line);
+}
+.icon-btn {
+  width: 64rpx; height: 64rpx; line-height: 64rpx; text-align: center;
+  font-size: 34rpx;
+  border-radius: 50%;
+  background: #fff; border: 3rpx solid var(--ink);
+  flex-shrink: 0;
+  transition: transform .08s ease;
+}
+.ipt {
+  flex: 1; min-width: 0;
+  background: #f5eada; border-radius: 24rpx;
+  padding: 14rpx 24rpx; font-size: 28rpx;
+  /* textarea 自身有高度；auto-height 在 wxml 里启用 */
+  min-height: 40rpx;
+  max-height: 240rpx; /* 约 4 行封顶，避免遮挡消息 */
+  line-height: 1.4;
+  box-sizing: border-box;
+  width: auto;
+}
+
+/* "+" 弹出的功能面板 — 浮在消息区之上，不挤压消息流 */
+.plus-panel {
+  position: absolute; left: 0; right: 0;
+  bottom: calc(100rpx + env(safe-area-inset-bottom));
+  background: #fff9ee;
+  border-top: 1rpx solid var(--line);
+  display: flex; gap: 32rpx;
+  padding: 32rpx 24rpx calc(32rpx + env(safe-area-inset-bottom)) 24rpx;
+  z-index: 10;
+}
+.plus-item {
+  display: flex; flex-direction: column; align-items: center; gap: 10rpx;
+  font-size: 24rpx; color: var(--text-2);
+  padding: 16rpx 24rpx;
+}
+.plus-item:active { opacity: 0.6; }
+.plus-icon { font-size: 56rpx; }
+
+/* 顶部对方头像（nav-bar 右侧） */
+.nav-peer { display: flex; align-items: center; }
+.nav-peer-avatar {
+  width: 56rpx; height: 56rpx; border-radius: 50%;
+  border: 2rpx solid rgba(255,255,255,0.4);
+}
+.send-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 30rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1; font-weight: 500;
+  color: #fff; background: #D8C6AA;
+  border: 3rpx solid var(--ink);
+  flex-shrink: 0;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.send-btn.active { background: var(--primary); }
+.send-btn:active { opacity: 0.85; }
+
+/* === 表情面板：浮在消息区之上（不挤压 msg-list），分类 + 网格 + 底部说明 === */
+.emoji-panel {
+  position: absolute; left: 0; right: 0;
+  bottom: calc(100rpx + env(safe-area-inset-bottom));
+  height: 420rpx; background: #fff9ee;
+  border-top: 1rpx solid var(--line);
+  display: flex; flex-direction: column;
+  z-index: 10;
+}
+.emoji-tabs {
+  display: flex; gap: 8rpx;
+  padding: 12rpx 24rpx;
+  border-bottom: 1rpx solid var(--line);
+  background: #fff;
+  overflow-x: auto;
+}
+.emoji-tab {
+  /* padding/border-radius 过大导致文字宽度超过药丸的"直边区"，
+     第一个 active tab「笑脸」左半被圆角裁掉。这里用 16rpx 圆角避免裁切 */
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 52rpx; padding: 0 18rpx; font-size: 26rpx; line-height: 1;
+  background: #fff; color: var(--ink-2);
+  border: 3rpx solid var(--ink);
+  border-radius: 16rpx; white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.emoji-tab.active {
+  background: #e8542f;
+  color: #fff;
+}
+.emoji-scroll { flex: 1; min-height: 0; }
+.emoji-grid {
+  display: flex; flex-wrap: wrap; padding: 16rpx;
+}
+.emoji-item {
+  width: 80rpx; height: 80rpx; line-height: 80rpx; text-align: center;
+  font-size: 40rpx;
+}
+.emoji-empty {
+  text-align: center; color: var(--text-3);
+  font-size: 24rpx; padding: 80rpx 0;
+}
+.emoji-tip {
+  font-size: 20rpx; color: var(--text-3);
+  text-align: center; padding: 8rpx 16rpx;
+  border-top: 1rpx solid var(--line);
+}

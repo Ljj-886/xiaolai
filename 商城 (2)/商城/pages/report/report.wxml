@@ -1,0 +1,32 @@
+<view class="page">
+  <nav-bar title="举报" back/>
+  <view class="card">
+    <view class="text-bold mb-16">举报原因</view>
+    <view class="reason-list">
+      <view wx:for="{{REASONS}}" wx:key="*this" class="reason {{reason === item ? 'active' : ''}}" bindtap="select" data-r="{{item}}">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">详细说明</view>
+    <textarea class="textarea" placeholder="请详细描述违规情况" maxlength="300" value="{{desc}}" bindinput="onInput"/>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">凭证（选填）</view>
+    <view class="image-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="image-remove" catchtap="remove" data-index="{{index}}" hover-class="press" hover-stay-time="80">✕</view>
+      </view>
+      <view wx:if="{{images.length < 3}}" class="image-add" bindtap="choose" hover-class="press" hover-stay-time="80">
+        <text class="plus">+</text>
+      </view>
+    </view>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="submit" hover-class="press" hover-stay-time="80">提交举报</view>
+  </view>
+</view>

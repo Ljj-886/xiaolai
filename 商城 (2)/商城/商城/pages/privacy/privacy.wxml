@@ -1,0 +1,26 @@
+<view class="page">
+  <nav-bar title="隐私政策" back="{{back}}"/>
+  <view class="card">
+    <view class="text-bold text-lg text-center">校园集市隐私政策</view>
+    <view class="text-3 text-sm text-center mt-8">生效日期：2026年9月</view>
+    <view class="text-3 text-sm mt-16" style="line-height:1.8">
+      「校园集市」由个人开发者运营，深知个人信息对您的重要性。本政策向您说明：我们收集哪些信息、为什么收集、如何保管，以及您对自己的信息拥有哪些权利。
+    </view>
+  </view>
+
+  <view class="card mt-24" wx:for="{{sections}}" wx:key="title" wx:for-item="sec">
+    <view class="text-bold mb-16">{{sec.title}}</view>
+    <view class="para" wx:for="{{sec.paras}}" wx:key="*this" wx:for-item="p">{{p}}</view>
+  </view>
+
+  <view class="card mt-24">
+    <view class="text-bold mb-16">联系我们</view>
+    <view class="contact">
+      如您对本政策有任何疑问、意见，或需要行使查询、更正、删除、注销等权利，可通过小程序内「我的 — 意见反馈」提交，我们会在 15 个工作日内答复。
+    </view>
+  </view>
+
+  <view class="text-3 text-sm text-center" style="padding:40rpx 0 60rpx">
+    — 感谢您对校园集市的信任 —
+  </view>
+</view>

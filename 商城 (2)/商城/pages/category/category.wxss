@@ -1,0 +1,156 @@
+/* ======================================================================
+   分类页：左栏（分类导航） / 右栏（排序条 + 商品列表）完全独立的两栏
+   ----------------------------------------------------------------------
+   1) 高度链：.page 用 100vh + padding-bottom 避让自定义 tabBar（box-sizing
+      保住高度），内部靠 flex:1 + min-height:0 打通 —— scroll-view 在 flex
+      容器里必须 min-height:0，否则高度会塌成内容高、底部就露出页面底色
+      （此前 .left 的 height:100% 在这条链上没解析成功，导致左栏白底没铺满）。
+   2) 左栏白底画在滚动区盒子自身（.cat-side），与内容多寡无关，永远铺到底。
+   3) 类名按用途分前缀（cat-side-* / cat-sortbar-* / cat-list-*），
+      左右两栏的边框、圆角、字号互不覆盖。
+   ====================================================================== */
+
+.page {
+  height: 100vh;
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.cat-layout { flex: 1; min-height: 0; display: flex; }
+
+/* ---------------- 左栏：分类导航 ---------------- */
+.cat-side {
+  flex: 0 0 190rpx;
+  align-self: stretch;
+  height: 100%;
+  background: #fff;
+  border-right: 2rpx solid var(--line);
+}
+.cat-side-inner {
+  /* 内容不足一屏时也把白底撑满；不加 padding-bottom，避免最底部留出空档 */
+  min-height: 100%;
+  background: #fff;
+}
+.cat-side-item {
+  padding: 28rpx 12rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 8rpx;
+  color: var(--text-2);
+  position: relative;
+  font-size: 24rpx;
+}
+.cat-side-item.active {
+  color: var(--primary); font-weight: 500; background: var(--bg);
+}
+.cat-side-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%); width: 6rpx; height: 40rpx;
+  background: var(--primary); border-radius: 0 4rpx 4rpx 0;
+}
+
+/* 卡通贴纸感：自绘图标 + 轻微倾斜。
+   角度由 JS 按索引算好写进内联 style（--tilt），不用 :nth-child ——
+   那样只能覆盖前 N 项，新增第 11 个分类就没有倾斜了。 */
+.cat-side-icon {
+  width: 76rpx; height: 76rpx;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border-radius: 26rpx 22rpx 24rpx 20rpx; /* 四角不等 → 手绘卡通气泡 */
+  border: 4rpx solid var(--ink);
+  padding: 7rpx;
+  /* 底色由 WXML 内联 style="background-color:{{item.bg}}" 注入；这里只做笔触质感 */
+  background-image: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.6), rgba(255,255,255,0) 62%);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform .15s ease;
+}
+/* 选中态：在倾斜基础上轻微放大 + 加粗描边，强调当前分类 */
+.cat-side-item.active .cat-side-icon {
+  transform: rotate(var(--tilt, 0deg)) scale(1.06);
+  border-width: 5rpx;
+}
+
+/* ---------------- 右栏：排序条 + 商品列表 ---------------- */
+.cat-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.cat-sortbar {
+  flex-shrink: 0;
+  display: flex;
+  background: #fff;
+  padding: 12rpx 16rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+.cat-sortbar-item {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  height: 60rpx; margin: 0 6rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.cat-sortbar-item.active {
+  background: var(--primary); color: #fff; font-weight: 500;
+  border-color: var(--ink);
+}
+
+.cat-list { flex: 1; min-height: 0; }
+.cat-list-inner { padding: 16rpx; }
+
+/* 固定两列、列宽与间距完全统一 → 卡片（含图片）尺寸天然一致 */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx;
+  align-items: start;
+}
+.cat-cell { min-width: 0; }
+
+/* 列表底部提示（加载中 / 加载更多 / 没有更多） */
+.cat-tip {
+  text-align: center;
+  padding: 28rpx 0 8rpx;
+  color: var(--text-3);
+  font-size: 24rpx;
+}
+/* 翻页区「加载失败，点击重试」：必须看起来可点，否则用户不知道能救回来 */
+.cat-tip.err { color: var(--primary); text-decoration: underline; }
+
+/* 首屏骨架屏：贴纸风占位卡片 + 微光扫过，暗示内容正在来，避免空白焦虑。
+   注意：本设计系统不用渐变装饰彩带，这里用中性灰阶 shimmer（非彩色渐变），符合"不用渐变"约定。 */
+.cat-skeleton {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx;
+}
+.cat-skel-card {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  border: 4rpx solid var(--ink); border-right-width: 8rpx; border-bottom-width: 8rpx;
+  padding: 0 0 16rpx;
+}
+.cat-skel-img {
+  width: 100%; aspect-ratio: 1 / 1; background: #F0E4D0;
+  position: relative; overflow: hidden;
+}
+.cat-skel-img::after,
+.cat-skel-line::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-100%);
+  animation: cat-shimmer 1.2s infinite;
+}
+.cat-skel-line {
+  position: relative; overflow: hidden;
+  height: 22rpx; margin: 14rpx 16rpx 0; border-radius: 8rpx;
+  background: #F0E4D0;
+}
+.cat-skel-line.w70 { width: 70%; }
+.cat-skel-line.w40 { width: 40%; }
+@keyframes cat-shimmer { 100% { transform: translateX(100%); } }

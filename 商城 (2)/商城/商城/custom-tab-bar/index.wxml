@@ -1,0 +1,14 @@
+<view class="tab-bar">
+  <view class="tab-item {{selected === index ? 'on' : ''}}"
+        wx:for="{{list}}" wx:key="pagePath"
+        data-index="{{index}}" data-path="{{item.pagePath}}"
+        bindtap="onTap" hover-class="tab-hover" hover-stay-time="60">
+    <view class="tab-pill">
+      <view class="tab-ico-wrap">
+        <image class="tab-ico" src="{{selected === index ? item.iconOn : item.icon}}" mode="aspectFit"/>
+        <view class="tab-badge" wx:if="{{item.badge && unread > 0}}">{{unread > 99 ? '99+' : unread}}</view>
+      </view>
+      <text class="tab-txt">{{item.text}}</text>
+    </view>
+  </view>
+</view>

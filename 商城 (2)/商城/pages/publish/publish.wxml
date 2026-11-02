@@ -1,0 +1,94 @@
+<wxs src="../../utils/icon.wxs" module="ico" />
+<view class="page">
+  <!-- 发布类型 -->
+  <view class="card type-tabs">
+    <view class="type-tab {{form.type === 'sell' ? 'active' : ''}}" bindtap="setType" data-type="sell" hover-class="press" hover-stay-time="80">发布闲置</view>
+    <view class="type-tab {{form.type === 'want' ? 'active' : ''}}" bindtap="setType" data-type="want" hover-class="press" hover-stay-time="80">我想要买</view>
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="card">
+    <view class="text-bold mb-16">商品图片 <text class="text-3 text-sm">{{form.type === 'want' ? '（选填，最多 9 张）' : '（最多 9 张，第一张为封面）'}}</text></view>
+    <view class="image-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="image-remove" catchtap="removeImage" data-index="{{index}}" hover-class="press" hover-stay-time="80">✕</view>
+        <view wx:if="{{index === 0}}" class="image-cover">封面</view>
+      </view>
+      <view wx:if="{{images.length < 9}}" class="image-add" bindtap="chooseImage" hover-class="press" hover-stay-time="80">
+        <text class="plus">+</text>
+        <text class="text-sm">添加图片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标题 -->
+  <view class="card">
+    <input class="title-input" placeholder="一句话描述商品（必填，30字内）" maxlength="30" value="{{form.title}}" bindinput="onTitle"/>
+  </view>
+
+  <!-- 详细描述 -->
+  <view class="card">
+    <textarea class="desc-input" placeholder="说说商品的细节、入手时间、使用情况、是否包邮等…" maxlength="500" value="{{form.desc}}" bindinput="onDesc"/>
+    <view class="text-3 text-sm" style="text-align:right;margin-top:8rpx">{{form.desc.length}}/500</view>
+  </view>
+
+  <!-- 分类 -->
+  <view class="card">
+    <view class="text-bold mb-16">分类</view>
+    <view class="cat-grid">
+      <view wx:for="{{cats}}" wx:key="key" class="cat-pill {{form.category === item.key ? 'active' : ''}}" bindtap="selectCat" data-key="{{item.key}}" hover-class="press" hover-stay-time="80">
+        <image class="pill-ico" src="{{ico.cat(item.key)}}" mode="aspectFit"/>
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成色 -->
+  <view class="card" wx:if="{{form.type !== 'want'}}">
+    <view class="text-bold mb-16">新旧程度</view>
+    <view class="cond-grid">
+      <view wx:for="{{conditions}}" wx:key="value" class="cat-pill {{form.condition === item.value ? 'active' : ''}}" bindtap="selectCond" data-value="{{item.value}}" hover-class="press" hover-stay-time="80">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 价格 -->
+  <view class="card">
+    <view class="text-bold mb-16">{{form.type === 'want' ? '预算' : '价格'}}</view>
+    <view class="price-input">
+      <text class="price-symbol price">¥</text>
+      <input type="digit" placeholder="{{form.type === 'want' ? '选填，你的心理价位' : '0.00'}}" value="{{form.price}}" bindinput="onPrice"/>
+    </view>
+    <view class="mt-16" wx:if="{{form.type !== 'want'}}" style="display:flex;align-items:center;gap:16rpx">
+      <text class="text-3 text-sm">原价</text>
+      <text class="price-symbol text-3">¥</text>
+      <input type="digit" placeholder="选填" value="{{form.originalPrice}}" bindinput="onOrigPrice" style="flex:1"/>
+    </view>
+  </view>
+
+  <!-- 自提点 -->
+  <view class="card" bindtap="choosePickup">
+    <view class="flex-between">
+      <view>
+        <view class="text-3 text-sm">自提点</view>
+        <view class="text-bold mt-8">{{form.pickupPoint || '选择自提点'}}</view>
+      </view>
+      <text class="text-3">›</text>
+    </view>
+  </view>
+
+  <!-- 协议 -->
+  <view class="agree">
+    <view class="checkbox {{agreed ? 'checked' : ''}}" bindtap="toggleAgree"></view>
+    <text class="text-sm text-2">我已阅读并同意</text>
+    <text class="text-sm text-primary" bindtap="goAgreement">《校园集市发布协议》</text>
+  </view>
+
+  <view style="height:160rpx"></view>
+
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="submit" hover-class="press" hover-stay-time="80">{{form.type === 'want' ? '发布求购' : '立即发布'}}</view>
+  </view>
+</view>

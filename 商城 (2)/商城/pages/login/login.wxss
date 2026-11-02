@@ -1,0 +1,141 @@
+/* 底部单独加上安全区：原写法 `padding: 32rpx` 会把 app.wxss 里 .page 的
+   padding-bottom: env(safe-area-inset-bottom) 整条覆盖掉，
+   导致登录按钮在全面屏机型上贴到 Home 指示条。 */
+.page {
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  min-height: 100vh;
+  background: #fff9ee;
+}
+
+.header {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 80rpx 0 40rpx;
+}
+.logo { font-size: 100rpx; line-height: 1; }
+.title { font-size: 44rpx; font-weight: 700; margin-top: 16rpx; color: var(--primary); }
+.subtitle { font-size: 26rpx; color: #a08869; margin-top: 8rpx; }
+
+.hero { text-align: center; padding: 40rpx 32rpx; }
+.emoji-lg { font-size: 80rpx; line-height: 1; }
+.text-warn { color: #d97706; }
+
+.card { padding: 32rpx; margin-top: 24rpx; }
+
+.btn {
+  display: flex; align-items: center; justify-content: center;
+  height: 88rpx; border-radius: 44rpx; font-size: 30rpx; font-weight: 500;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.btn-primary { background: var(--primary); color: #fff; border: 4rpx solid var(--ink); border-right-width: 8rpx; border-bottom-width: 8rpx; }
+.btn-disabled { opacity: 0.5; }
+
+.bottom-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  padding: 24rpx 32rpx calc(24rpx + env(safe-area-inset-bottom)); background: #fff;
+  border-top: 1rpx solid #f0e4d0;
+  box-sizing: border-box;
+}
+
+/* ===== 统一授权面板（仿微信底部弹窗） ===== */
+.mask {
+  position: fixed; left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5); z-index: 100;
+  display: flex; align-items: flex-end;
+  animation: fadeIn .2s ease;
+}
+.sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 16rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(40%); opacity: .6; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.sheet-bar { width: 72rpx; height: 8rpx; border-radius: 4rpx; background: #e8dcc6; margin: 8rpx auto 20rpx; }
+.sheet-title { text-align: center; font-size: 34rpx; font-weight: 700; color: #3d2b1f; }
+.sheet-sub { text-align: center; font-size: 26rpx; color: #a08869; margin-top: 8rpx; }
+
+/* 三项信息装进同一张卡片，同时展示 */
+.auth-box {
+  margin-top: 28rpx;
+  background: #f5eada;
+  border-radius: 20rpx;
+  padding: 0 24rpx;
+}
+.auth-row {
+  display: flex; align-items: center; width: 100%;
+  min-height: 112rpx; padding: 20rpx 0; margin: 0;
+  background: transparent; border-radius: 0;
+  font-size: 30rpx; color: #3d2b1f; text-align: left;
+  line-height: 1.5; box-sizing: border-box;
+}
+/* button 被复用为行控件时，清掉微信默认样式 */
+button.auth-row, button.sheet-btn { border: 0; font-weight: 600; padding-left: 0; padding-right: 0; }
+button.auth-row { font-weight: normal; }
+button.auth-row::after, button.sheet-btn::after { border: none; }
+
+.row-line { height: 1rpx; background: #e8dcc6; }
+
+.row-label { width: 180rpx; flex-shrink: 0; font-size: 30rpx; color: #3d2b1f; }
+.row-right {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; justify-content: flex-end; gap: 12rpx;
+}
+.arrow { color: #c9b49a; font-size: 32rpx; font-weight: 300; flex-shrink: 0; line-height: 1; }
+
+/* 头像：显式正方形宽高再裁圆（百分比尺寸在 button 内失效会把图压成椭圆） */
+.avatar-preview {
+  width: 88rpx; height: 88rpx;
+  border-radius: 50%; background: #f5eada;
+  flex-shrink: 0; display: block;
+}
+.avatar-empty { display: flex; align-items: center; justify-content: center; border: 2rpx dashed #d8c6aa; }
+.avatar-empty .plus { font-size: 40rpx; color: #bbb; line-height: 1; }
+
+/* 昵称输入框：显式高度 + flex 垂直居中，修复默认高度导致文字贴边 */
+.nick-input {
+  flex: 1; min-width: 0;
+  height: 88rpx; min-height: 88rpx;
+  font-size: 30rpx; color: #3d2b1f; text-align: right;
+  background: transparent;
+}
+.ipt-ph { color: #c9b49a; font-size: 30rpx; }
+.required { color: #ff3b30; font-size: 26rpx; }
+.school-val { font-size: 30rpx; color: #3d2b1f; }
+
+/* 协议同意 */
+.auth-agree {
+  display: flex; align-items: flex-start; gap: 12rpx;
+  margin-top: 24rpx; padding: 8rpx 4rpx;
+}
+.auth-checkbox {
+  flex-shrink: 0;
+  width: 32rpx; height: 32rpx;
+  margin-top: 4rpx;
+  border: 2rpx solid #d8c6aa; border-radius: 50%;
+  box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-checkbox.checked { background: var(--primary); border-color: var(--primary); }
+.auth-check { color: #fff; font-size: 20rpx; line-height: 1; }
+.auth-agree-text { flex: 1; font-size: 24rpx; color: #a08869; line-height: 1.6; }
+.auth-link { color: var(--primary); }
+.btn-disabled { opacity: 0.45; }
+
+/* 登录页常驻协议入口（未登录也能查看） */
+.login-links {
+  display: flex; align-items: center; justify-content: center; gap: 32rpx;
+  padding: 32rpx 0;
+}
+.link-text { font-size: 26rpx; color: var(--primary); }
+
+.sheet-btn { width: 100%; margin-top: 24rpx; }
+.sheet-cancel { text-align: center; font-size: 28rpx; color: #b39b80; padding: 24rpx 0 8rpx; }

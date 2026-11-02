@@ -1,0 +1,13 @@
+=== 索引 12 ===
+✅ 学生认证             user=obj21 form=obj4 educations=arr4 educationIndex=0 evidence=arr0 schoolNames=arr2869 schoolNamesFull=arr2869 schoolSuggestions=arr0 __webviewId__=9
+=== 索引 13 ===
+✅ 登录               user=obj21 logged=true version=1.0.0 defaultAvatar=/images/avatar __webviewId__=11
+✅ 发布协议             sections=arr10 __webviewId__=13
+=== 索引 15 ===
+✅ 隐私政策             back=true sections=arr9 __webviewId__=14
+=== 索引 16 ===
+✅ 意见反馈             KINDS=arr4 kind=suggest images=arr0 __webviewId__=15
+=== 索引 17 ===
+✅ 我的订单             tabs=arr5 role=buyer list=arr2 page=2 pageSize=20 form=obj3 STATUS_ORDER=obj6 __webviewId__=16
+=== 索引 18 ===
+✅ 管理后台             stats=obj11 todos=arr4 logs=arr0 __webviewId__=17

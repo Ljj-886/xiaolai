@@ -1,0 +1,80 @@
+.gc {
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  border: 4rpx solid var(--ink); border-right-width: 8rpx; border-bottom-width: 8rpx;
+  display: flex;
+  flex-direction: column;
+  transition: transform .15s ease;
+}
+.gc:active { transform: scale(0.98); }
+.gc-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #F5EADA;
+}
+.gc-img { width: 100%; height: 100%; }
+/* 无图求购的专属卡面：贴纸风，用文字+图标代替图片，避免「灰色占位图像裂图」的观感。
+   注意：本设计系统不用渐变 → 用纯色底 + 描边，不加 border 以免和卡片外框打架 */
+.gc-noimg {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12rpx;
+  background: #FFF3E6;
+}
+.gc-noimg-ico { font-size: 64rpx; }
+.gc-noimg-t {
+  font-size: 26rpx; font-weight: 700; letter-spacing: 4rpx;
+  color: var(--primary); background: #fff;
+  padding: 4rpx 20rpx; border-radius: 999rpx; border: 3rpx solid var(--primary);
+}
+.gc-status {
+  position: absolute; top: 12rpx; left: 12rpx;
+  background: rgba(0,0,0,0.55); color: #fff;
+  padding: 4rpx 14rpx; border-radius: 8rpx;
+  font-size: 22rpx;
+}
+.gc-badge {
+  position: absolute; bottom: 12rpx; right: 12rpx;
+  background: var(--success); color: #fff;
+  padding: 4rpx 12rpx; border-radius: 8rpx;
+  font-size: 20rpx;
+}
+.gc-badge-want {
+  top: 12rpx; left: 12rpx; bottom: auto; right: auto;
+  background: var(--primary); font-weight: 600;
+}
+/* 商品认证角标：左下角（右上被「校园认证」占、左上被状态/求购占） */
+.gc-badge-goods {
+  right: auto; left: 12rpx;
+  background: var(--primary); font-weight: 600;
+}
+.gc-report {
+  position: absolute; top: 10rpx; right: 10rpx;
+  display: flex; align-items: center; gap: 6rpx;
+  background: rgba(255,255,255,0.94); color: var(--ink);
+  border: 2rpx solid var(--ink);
+  padding: 6rpx 16rpx; border-radius: 999rpx;
+  font-size: 22rpx; line-height: 1; z-index: 3;
+}
+.gc-report:active { transform: scale(0.94); }
+.gc-report-ico { font-size: 22rpx; }
+.gc-body {
+  padding: 16rpx;
+  display: flex; flex-direction: column; gap: 8rpx;
+}
+.gc-title {
+  font-size: 26rpx; line-height: 1.4; color: var(--text);
+  min-height: 72rpx;
+}
+.gc-meta { display: flex; align-items: baseline; }
+.gc-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 4rpx; gap: 8rpx;
+}
+/* 「想要」热度：珊瑚橙（同价格色），贴在卡片右下，一眼看到热度 */
+.gc-want {
+  flex-shrink: 0;
+  font-size: 22rpx; color: var(--primary); font-weight: 600;
+}
+.gc-col { width: 100%; }

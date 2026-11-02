@@ -1,0 +1,29 @@
+<view class="page">
+  <nav-bar title="评价" back/>
+  <view class="card">
+    <view class="text-bold mb-8">本次自提体验</view>
+    <view class="text-3 text-sm mb-16">您将为 <text class="text-primary">{{peerName || peerRole || '对方'}}</text> 评价</view>
+    <view class="stars">
+      <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{score >= item ? 'on' : ''}}" bindtap="setScore" data-s="{{item}}">★</text>
+    </view>
+    <view class="text-3 text-sm mt-8">{{scoreText}}</view>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">给 Ta 贴标签（可多选）</view>
+    <view class="tag-grid">
+      <view wx:for="{{tags}}" wx:key="*this" class="tag-pill {{selected[item] ? 'active' : ''}}" bindtap="toggleTag" data-tag="{{item}}" hover-class="press" hover-stay-time="80">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">说几句</view>
+    <textarea class="textarea" placeholder="描述本次自提感受，对其他同学很有帮助" maxlength="200" value="{{content}}" bindinput="onInput"/>
+    <view class="text-3 text-sm" style="text-align:right;margin-top:8rpx">{{content.length}}/200</view>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="submit" hover-class="press" hover-stay-time="80">提交评价</view>
+  </view>
+</view>

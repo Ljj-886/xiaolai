@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "test:cold": "node tools/test_cold_start.js",
+    "live:home": "node tools/live_home.js",
+    "live:full": "node tools/live_full_check.js",
+    "devtools:auto": "D:\\weixinkaifa\\微信web开发者工具\\cli.bat auto --project . --auto-port 9420"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "miniprogram-automator": "^0.12.1"
+  },
+  "allowScripts": {
+    "better-sqlite3@13.0.3": true
+  }
+}

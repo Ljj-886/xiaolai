@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "学生认证",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar"
+  }
+}

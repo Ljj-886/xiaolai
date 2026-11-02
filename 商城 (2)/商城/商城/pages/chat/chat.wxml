@@ -1,0 +1,30 @@
+<view class="page">
+  <view wx:if="{{list.length}}">
+    <view wx:for="{{list}}" wx:key="_id" class="conv-item card" bindtap="open" bindlongpress="onLongPress" data-conv="{{item}}">
+      <image class="avatar" src="{{peerAvatarErr[item._id] ? defaultAvatar : (item.peerInfo.avatarUrl || defaultAvatar)}}" mode="aspectFill" binderror="onAvatarErr" data-id="{{item._id}}"/>
+      <view class="flex-1">
+        <view class="flex-between">
+          <view class="flex align-center" style="gap:8rpx">
+            <text class="text-bold">{{item.peerInfo.nickName || '同学'}}</text>
+            <text class="tag tag-success" wx:if="{{item.peerInfo.verified}}" style="font-size:20rpx;padding:2rpx 10rpx">✓认证</text>
+            <text class="text-3 text-sm" wx:if="{{item.peerInfo.school}}">{{item.peerInfo.school}}</text>
+          </view>
+          <text class="text-3 text-sm">{{item.lastMessageAtText}}</text>
+        </view>
+        <view class="flex-between mt-8">
+          <text class="text-3 text-sm ellipsis" style="max-width: 480rpx">{{item.lastMessage || item.goodsSnapshot.title || '开始聊聊吧'}}</text>
+          <view class="badge" wx:if="{{item.unreadCount > 0}}">{{item.unreadCount}}</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+    <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+  </view>
+  <view wx:elif="{{loadError}}">
+    <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+  </view>
+  <view wx:else>
+    <empty icon="💬" title="还没有消息" desc="在商品详情点击私聊开启对话" actionText="去逛逛" bind:action="goHome"/>
+  </view>
+</view>

@@ -1,0 +1,12 @@
+<view class="nav-bar" style="padding-top: {{statusBarHeight}}px; background: {{bg}};">
+  <view class="nav-bar-inner">
+    <view class="nav-back" wx:if="{{back}}" bindtap="onBack" hover-class="nav-back-hover" hover-stay-time="80">
+      <text class="nav-back-icon">‹</text>
+    </view>
+    <view class="nav-placeholder" wx:else></view>
+    <view class="nav-title">{{title}}</view>
+    <view class="nav-slot">
+      <slot name="right"/>
+    </view>
+  </view>
+</view>

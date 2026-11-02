@@ -1,0 +1,80 @@
+<view class="page">
+  <nav-bar title="个人资料" back/>
+
+  <!-- 头像 -->
+  <view class="row">
+    <text class="row-label">头像</text>
+    <view class="row-right">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" hover-class="none">
+        <image class="avatar" src="{{avatarErr ? defaultAvatar : (form.avatarUrl || defaultAvatar)}}" mode="aspectFill" binderror="onAvatarErr"/>
+      </button>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 名字 -->
+  <view class="row">
+    <text class="row-label">名字</text>
+    <input class="row-input" type="nickname" placeholder="请填写名字"
+           value="{{form.nickName}}" bindinput="onInput" data-k="nickName" maxlength="20"/>
+    <text wx:if="{{!form.nickName}}" class="arrow">›</text>
+  </view>
+
+  <!-- 性别 -->
+  <view class="row">
+    <text class="row-label">性别</text>
+    <picker class="row-picker" mode="selector" range="{{genders}}" value="{{genderIndex}}" bindchange="onPickGender">
+      <view class="row-input picker-val">
+        <text wx:if="{{!form.gender}}" class="placeholder">未设置</text>
+        <text wx:else>{{form.gender}}</text>
+      </view>
+    </picker>
+    <text class="arrow">›</text>
+  </view>
+
+  <!-- 学校（全页唯一一行：未认证可直接选；已认证锁定，修改需重新提交认证） -->
+  <view class="row">
+    <text class="row-label">学校</text>
+    <block wx:if="{{!verified}}">
+      <picker class="row-picker" mode="selector" range="{{schoolNames}}" bindchange="onPickSchool">
+        <view class="row-input picker-val">
+          <text wx:if="{{form.school}}">{{form.school}}</text>
+          <text wx:else class="placeholder">请选择学校</text>
+        </view>
+      </picker>
+      <text class="arrow">›</text>
+    </block>
+    <block wx:else>
+      <text class="row-value locked">{{form.school || '未填写'}}</text>
+      <text class="row-lock" bindtap="goVerify">修改 ›</text>
+    </block>
+  </view>
+
+  <!-- 校园认证信息（已认证：只读展示学号/姓名） -->
+  <block wx:if="{{verified}}">
+    <view class="row">
+      <text class="row-label">学号</text>
+      <text class="row-value locked">{{studentId || '未填写'}}</text>
+      <text class="row-lock" bindtap="goVerify">修改 ›</text>
+    </view>
+    <view class="row">
+      <text class="row-label">姓名</text>
+      <text class="row-value locked">{{realName || '未填写'}}</text>
+      <text class="row-lock" bindtap="goVerify">修改 ›</text>
+    </view>
+  </block>
+
+  <view class="hint">
+    <block wx:if="{{verified}}">
+      <view>已通过校园认证。学校、学号、姓名修改需重新提交认证。</view>
+    </block>
+    <block wx:else>
+      <view>头像、名字、性别、学校可随时修改；学号请前往「学生认证」提交。商品按学校隔离，只对同校同学展示。</view>
+    </block>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="save" hover-class="press" hover-stay-time="80">保存</view>
+  </view>
+</view>

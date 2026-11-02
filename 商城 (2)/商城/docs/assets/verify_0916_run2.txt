@@ -1,0 +1,56 @@
+启 IDE 端口 9460 …
+✅ connected
+
+— A. 分类页左栏底部空白 —
+  当前页： pages/category/category (✓)
+✓ A1 左栏分类 10 项且每项带 tilt 内联角度 — 10 项，tilt=-3deg/2.5deg/-2deg…
+✓ A2 .left-inner 高度 >= 左栏可视高度（白底铺满，无露白） — left=719.1px, inner=930.0px
+  左栏渲染项数：10
+✓ A3 左栏 10 项全部渲染 — 实际 10
+✓ A4 切到末位分类后 scrollIntoView 指向该项 — scrollIntoView="cat-other" 期望 cat-other
+✓ A5 分类页无 console.error — 干净
+✓ A6 分类页无 getSystemInfoSync 废弃警告 — 干净（已改用 wx.getWindowInfo）
+
+— B. 聊天室面板对齐（独立连接）—
+  ✅ re-connected
+  当前页： pages/chat/chat (✓)
+  无会话，尝试用 peer 打开临时聊天
+  chatroom： pages/chatroom/chatroom (✓ 已进入)
+  测量前再次确认页面： pages/chatroom/chatroom
+  基准测量： {"inputBar":{"top":725.4285888671875,"h":84.5714340209961},"panel":{"top":486.9285888671875,"h":149.07144165039062}}
+✗ B1 +面板底边与输入栏顶边对齐（误差 ≤3px） — panel.top=486.9 input.top=725.4 gap=238.5px
+  多行测量： {"inputBar":{"top":686.4285888671875,"h":123.5714340209961},"panel":null}
+✓ B2 输入多行后输入栏变高 — 84.6px → 123.6px
+✗ B3 输入栏变高后面板仍贴合（未被输入框盖住） — 输入后 +面板消失了（可能被 onInput 里的 showPlus:false 关掉 —— 需人工确认这是否为期望行为）
+
+— C. 安全区兜底 —
+✗ C /pages/credit/credit 页 .page 已渲染且有高度 — Connection closed, check if wechat web devTools is still running
+✗ C /pages/agreement/agreement 页 .page 已渲染且有高度 — Connection closed, check if wechat web devTools is still running
+✗ C /pages/privacy/privacy 页 .page 已渲染且有高度 — Connection closed, check if wechat web devTools is still running
+
+— D. 废弃 API 警告 —
+✓ D1 全程无 getSystemInfoSync 废弃警告 — 干净
+✓ D2 全程无 console.error — 干净
+
+— 截图 —
+  📷 fix_cat_last.png
+  ✗ fix_cat_left.png timeout waiting for automator response
+  📷 fix_chatroom_panel.png
+
+================ 汇总 ================
+✓ A1 左栏分类 10 项且每项带 tilt 内联角度
+✓ A2 .left-inner 高度 >= 左栏可视高度（白底铺满，无露白）
+✓ A3 左栏 10 项全部渲染
+✓ A4 切到末位分类后 scrollIntoView 指向该项
+✓ A5 分类页无 console.error
+✓ A6 分类页无 getSystemInfoSync 废弃警告
+✗ B1 +面板底边与输入栏顶边对齐（误差 ≤3px）  ← panel.top=486.9 input.top=725.4 gap=238.5px
+✓ B2 输入多行后输入栏变高
+✗ B3 输入栏变高后面板仍贴合（未被输入框盖住）  ← 输入后 +面板消失了（可能被 onInput 里的 showPlus:false 关掉 —— 需人工确认这是否为期望行为）
+✗ C /pages/credit/credit 页 .page 已渲染且有高度  ← Connection closed, check if wechat web devTools is still running
+✗ C /pages/agreement/agreement 页 .page 已渲染且有高度  ← Connection closed, check if wechat web devTools is still running
+✗ C /pages/privacy/privacy 页 .page 已渲染且有高度  ← Connection closed, check if wechat web devTools is still running
+✓ D1 全程无 getSystemInfoSync 废弃警告
+✓ D2 全程无 console.error
+
+通过 9/14

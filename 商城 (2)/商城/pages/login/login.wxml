@@ -1,0 +1,74 @@
+<view class="page">
+  <nav-bar title="登录" back="false"/>
+  <view class="header">
+    <view class="logo">🎒</view>
+    <view class="title">校园集市</view>
+    <view class="subtitle">同校二手闲置物品交换平台</view>
+  </view>
+
+  <view class="card hero">
+    <view class="emoji-lg">🔐</view>
+    <view class="text-bold text-lg mt-16">请使用微信账号登录</view>
+    <view class="text-2 text-sm mt-8" style="line-height:1.7">
+      本小程序与微信绑定使用，将获取你的微信头像、昵称用于校园身份认证和沟通。
+    </view>
+    <view class="text-warn text-sm mt-8">
+      ⚠️ 拒绝授权将无法使用本小程序
+    </view>
+  </view>
+
+  <view class="login-links">
+    <text class="link-text" bindtap="goAgreement" hover-class="press" hover-stay-time="80">《用户协议》</text>
+    <text class="link-text" bindtap="goPrivacy" hover-class="press" hover-stay-time="80">《隐私政策》</text>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="openAuth" hover-class="press" hover-stay-time="80">登 录</view>
+  </view>
+
+  <!-- 统一授权面板：点击「登录」后弹出，头像/昵称/手机号三项同时展示，一次完成登录 -->
+  <view wx:if="{{showAuth}}" class="mask" bindtap="closeAuth">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-bar"></view>
+      <view class="sheet-title">微信账号登录</view>
+      <view class="sheet-sub">使用微信头像和昵称登录，学校会在「学生认证」环节由管理员根据学信网截图人工审核确认</view>
+
+      <view class="auth-box">
+        <!-- 头像：点击弹出微信原生面板（用微信头像/从相册选择/拍照） -->
+        <button class="auth-row" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar" hover-class="none">
+          <text class="row-label">头像</text>
+          <view class="row-right">
+            <image wx:if="{{avatarUrl}}" class="avatar-preview" src="{{avatarUrl}}" mode="aspectFill"/>
+            <view wx:else class="avatar-preview avatar-empty"><text class="plus">+</text></view>
+            <text class="arrow">›</text>
+          </view>
+        </button>
+
+        <view class="row-line"></view>
+
+        <!-- 昵称：键盘上方可一键带入微信昵称 -->
+        <view class="auth-row">
+          <text class="row-label">昵称</text>
+          <input class="nick-input" type="nickname" placeholder="点击获取微信昵称"
+                 placeholder-class="ipt-ph" value="{{nickName}}" bindinput="onNickInput" maxlength="20"/>
+          <text class="arrow">›</text>
+        </view>
+
+        <!-- 学校选项已删除：登录不再收集学校，避免重复填写。
+             学校在「学生认证」环节通过学信网在线学籍验证报告截图自动确认（管理员审核）。 -->
+      </view>
+
+      <view class="auth-agree" bindtap="toggleAgree">
+        <view class="auth-checkbox {{agreed ? 'checked' : ''}}">
+          <text wx:if="{{agreed}}" class="auth-check">✓</text>
+        </view>
+        <view class="auth-agree-text">我已阅读并同意<text class="auth-link" catchtap="goAgreement" hover-class="press" hover-stay-time="80">《用户协议》</text>和<text class="auth-link" catchtap="goPrivacy" hover-class="press" hover-stay-time="80">《隐私政策》</text></view>
+      </view>
+
+      <button class="btn btn-primary sheet-btn {{agreed ? '' : 'btn-disabled'}}" hover-class="none"
+              bindtap="submitLogin">{{loading ? '登录中…' : '授权并登录'}}</button>
+      <view class="sheet-cancel" bindtap="closeAuth">暂不登录</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,70 @@
+<wxs src="../../utils/icon.wxs" module="ico" />
+<view class="page">
+  <nav-bar title="搜索" back/>
+  <view class="search-row">
+    <view class="search-input flex-1">
+      <text>🔍</text>
+      <input class="flex-1" placeholder="搜闲置、商品、关键词" confirm-type="search" value="{{kw}}"
+        bindinput="onInput" bindconfirm="doSearch" focus="{{autoFocus}}"/>
+      <text wx:if="{{kw}}" class="text-3" bindtap="clear">✕</text>
+    </view>
+    <view class="cancel" bindtap="goBack">取消</view>
+  </view>
+
+  <view class="filter card">
+    <scroll-view scroll-x class="chip-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="chip {{category === '' ? 'on' : ''}}" bindtap="onCategory" data-v="" hover-class="press" hover-stay-time="80">全部</view>
+      <view wx:for="{{categories}}" wx:key="key" wx:if="{{item.key}}" class="chip {{category === item.key ? 'on' : ''}}" bindtap="onCategory" data-v="{{item.key}}" hover-class="press" hover-stay-time="80"><image class="pill-ico" src="{{ico.cat(item.key)}}" mode="aspectFit"/>{{item.name}}</view>
+    </scroll-view>
+    <view class="filter-row">
+      <view class="chip {{condition === '' ? 'on' : ''}}" bindtap="onCondition" data-v="" hover-class="press" hover-stay-time="80">成色</view>
+      <view wx:for="{{conditions}}" wx:key="value" wx:if="{{item.value}}" class="chip {{condition === item.value ? 'on' : ''}}" bindtap="onCondition" data-v="{{item.value}}" hover-class="press" hover-stay-time="80">{{item.label}}</view>
+    </view>
+    <view class="filter-row price-row">
+      <input class="price-ipt" type="digit" placeholder="最低价" value="{{minPrice}}" bindinput="onMinPrice"/>
+      <text class="price-sep">—</text>
+      <input class="price-ipt" type="digit" placeholder="最高价" value="{{maxPrice}}" bindinput="onMaxPrice"/>
+      <view class="chip price-apply" bindtap="applyPrice" hover-class="press" hover-stay-time="80">确定</view>
+    </view>
+    <view class="filter-row">
+      <view wx:for="{{sorts}}" wx:key="value" class="chip {{sort === item.value ? 'on' : ''}}" bindtap="onSort" data-v="{{item.value}}" hover-class="press" hover-stay-time="80">{{item.label}}</view>
+      <view class="chip reset" bindtap="resetFilter" hover-class="press" hover-stay-time="80">重置</view>
+    </view>
+  </view>
+
+  <view class="history card" wx:if="{{!searched}}">
+    <view class="flex-between">
+      <text class="text-bold">历史搜索</text>
+      <text class="text-3 text-sm" bindtap="clearHistory">清除</text>
+    </view>
+    <view class="tag-list mt-16">
+      <text wx:for="{{history}}" wx:key="*this" class="tag tag-line" bindtap="quickSearch" data-kw="{{item}}">{{item}}</text>
+      <text wx:if="{{!history.length}}" class="text-3 text-sm">暂无搜索记录</text>
+    </view>
+  </view>
+
+  <view class="hot card" wx:if="{{!searched}}">
+    <view class="text-bold">热门搜索</view>
+    <view class="tag-list mt-16">
+      <text wx:for="{{hotWords}}" wx:key="*this" class="tag tag-line" bindtap="quickSearch" data-kw="{{item}}">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="result" wx:if="{{searched}}">
+    <view class="result-head text-3 text-sm" wx:if="{{!loadError}}">{{hasMore ? '已显示' : '共找到'}} {{total}} 件相关商品</view>
+    <view class="grid">
+      <view class="grid-cell" wx:for="{{list}}" wx:key="_id">
+        <goods-card item="{{item}}" bind:tap="goDetail" data-id="{{item._id}}"/>
+      </view>
+    </view>
+    <view wx:if="{{!loading && loadError}}">
+      <empty icon="⚠️" title="搜索失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+    </view>
+    <view wx:elif="{{!loading && list.length === 0}}">
+      <empty icon="🔍" title="没有找到相关商品" desc="试试其他关键词"/>
+    </view>
+    <view wx:if="{{loading}}" class="loading">搜索中…</view>
+    <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+    <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "校园集市",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "goods-card": "/components/goods-card/goods-card",
+    "empty": "/components/empty/empty"
+  }
+}

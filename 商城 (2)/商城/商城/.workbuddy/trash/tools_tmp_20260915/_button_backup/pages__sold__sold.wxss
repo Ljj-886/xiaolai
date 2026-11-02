@@ -1,0 +1,107 @@
+.page { min-height: 100vh; padding: 0 0 calc(40rpx + env(safe-area-inset-bottom)); background: var(--bg); }
+
+/* === 个人主页 banner === */
+.banner {
+  position: relative;
+  background: #fff;
+  padding: 0 24rpx 24rpx;
+}
+.banner-bg {
+  position: absolute; left: 16rpx; right: 16rpx; top: 0; height: 180rpx;
+  background: #e8542f;
+  border: 4rpx solid var(--ink);
+  border-top: none;
+  border-radius: 0 0 28rpx 28rpx;
+}
+.banner-inner {
+  position: relative;
+  display: flex; align-items: center; gap: 24rpx;
+  padding-top: 40rpx;
+}
+.b-avatar {
+  width: 140rpx; height: 140rpx;
+  border-radius: 50%;
+  background: #f0e4d0;
+  border: 4rpx solid #fff;
+  box-shadow: none;
+}
+.b-info { flex: 1; color: #fff; padding-top: 12rpx; }
+.b-name { display: flex; align-items: center; gap: 12rpx; }
+.b-info .text-bold { color: #fff; }
+.b-info .tag-success { background: rgba(255,255,255,0.25); color: #fff; border: 1rpx solid rgba(255,255,255,0.4); }
+.b-stats { color: #fff; opacity: 0.95; }
+.banner-stats {
+  position: relative;
+  display: flex;
+  margin-top: 24rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx 0;
+  box-shadow: none;
+}
+.b-stat {
+  flex: 1; text-align: center;
+  display: flex; flex-direction: column; gap: 6rpx;
+}
+.b-stat-mid { border-left: 1rpx solid #f0e4d0; border-right: 1rpx solid #f0e4d0; }
+.b-num { font-size: 36rpx; font-weight: 600; color: var(--text); }
+
+/* === tab === */
+.tabs {
+  display: flex;
+  padding: 8rpx;
+  gap: 8rpx;
+}
+.tab {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 6rpx;
+  padding: 16rpx 8rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: var(--text-3);
+}
+.tab.active { background: var(--primary); color: #fff; }
+.tab-num {
+  font-size: 22rpx;
+  background: rgba(0,0,0,0.1);
+  padding: 0 10rpx; border-radius: 12rpx;
+  line-height: 1.6;
+}
+.tab.active .tab-num { background: rgba(255,255,255,0.25); }
+
+/* === 分类筛选 === */
+.cats {
+  display: flex; flex-wrap: wrap; gap: 16rpx;
+  padding: 16rpx 24rpx;
+  background: #fff;
+  margin-top: 16rpx;
+  border-radius: 16rpx;
+}
+.cat {
+  padding: 10rpx 24rpx;
+  font-size: 24rpx;
+  background: #f5eada;
+  color: var(--text-2);
+  border-radius: 24rpx;
+  line-height: 1.4;
+}
+.cat.active {
+  background: #e8542f;
+  color: #fff;
+}
+
+/* === 商品网格 === */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; padding: 0 24rpx; }
+.grid-cell { width: 100%; }
+
+/* === 自己的商品管理按钮 === */
+.loading { text-align: center; color: var(--text-3); font-size: 24rpx; padding: 32rpx 0; }
+
+.b-report {
+  position: absolute; top: 24rpx; right: 24rpx; z-index: 3;
+  padding: 6rpx 22rpx; font-size: 24rpx; color: #fff;
+  background: rgba(0,0,0,0.28); border-radius: 30rpx;
+}
+
+.mt-8 { margin-top: 8rpx; }
+.mt-16 { margin-top: 16rpx; }

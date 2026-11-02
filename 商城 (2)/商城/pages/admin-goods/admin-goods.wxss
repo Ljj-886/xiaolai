@@ -1,0 +1,111 @@
+.page { min-height: 100vh; padding: 16rpx 24rpx env(safe-area-inset-bottom); }
+
+.tabs {
+  white-space: nowrap;
+  background: #F5EADA;
+  border: 3rpx solid var(--ink);
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 16rpx;
+}
+.tab {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 30rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  margin-right: 10rpx;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.tab.on { background: var(--primary); color: #fff; font-weight: 500; border-color: var(--ink); }
+
+/* 检索栏：被下架/禁售商品保留在库，管理员可搜索标题/原因/卖家定位记录 */
+.search-row {
+  display: flex; align-items: center; gap: 12rpx;
+  background: #fff; border: 3rpx solid var(--ink); border-radius: 20rpx;
+  padding: 0 20rpx; margin-bottom: 16rpx;
+}
+.search-input { flex: 1; height: 76rpx; font-size: 26rpx; color: var(--ink); }
+.search-clear {
+  width: 46rpx; height: 46rpx; line-height: 42rpx; text-align: center;
+  border-radius: 50%; color: var(--ink-2); background: #F5EADA;
+  border: 2rpx solid var(--ink); font-size: 24rpx;
+}
+
+.list { padding-bottom: 24rpx; }
+.item { margin-bottom: 16rpx; padding: 24rpx; }
+
+/* ① 身份行：缩略图 + 标题 + 状态 */
+.row-head { display: flex; gap: 20rpx; }
+.thumb-wrap { flex-shrink: 0; }
+.thumb { width: 160rpx; height: 160rpx; border-radius: 12rpx; background: #f5eada; border: 3rpx solid var(--ink); }
+.thumb-empty {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-3); font-size: 24rpx; background: #FFF3E6;
+}
+.head-main { flex: 1; min-width: 0; }
+.title-line { display: flex; align-items: flex-start; gap: 10rpx; }
+.title-line .title { flex: 1; font-size: 30rpx; font-weight: 600; line-height: 1.35; }
+.title-line .tag { flex-shrink: 0; margin-left: 0; margin-top: 2rpx; }
+
+/* ② 属性行：价格 + 分类 + 校区（允许换行，避免挤成一行导致文字被压扁） */
+.attr-line { display: flex; align-items: baseline; gap: 12rpx; flex-wrap: wrap; margin-top: 10rpx; row-gap: 4rpx; }
+.attr-price { font-size: 30rpx; font-weight: 700; color: var(--primary); flex-shrink: 0; }
+.attr-price.attr-na { color: var(--ink-3); font-weight: 500; font-size: 26rpx; }
+.attr-sub { font-size: 24rpx; color: var(--ink-3); flex-shrink: 0; }
+
+/* ③ 卖家行 */
+.seller-line {
+  display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap;
+  margin-top: 10rpx; font-size: 24rpx; color: var(--ink-2);
+}
+.seller-line .ellipsis { max-width: 220rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seller-line .dot { color: var(--ink-3); }
+.seller-av { width: 34rpx; height: 34rpx; border-radius: 50%; background: #F5EADA; flex-shrink: 0; }
+.mini-tag {
+  font-size: 20rpx; padding: 2rpx 10rpx; border-radius: 6rpx;
+  background: #DEF7F2; color: var(--success);
+}
+.mini-tag-warn { background: #F5EADA; color: var(--ink-3); }
+
+/* ④ 问题区块：为何无法上架（高亮） */
+.issue {
+  margin-top: 16rpx; padding: 16rpx 18rpx;
+  background: #FFF8F6; border: 3rpx solid #F3D3C9; border-left-width: 8rpx; border-radius: 12rpx;
+}
+.issue-row { display: flex; gap: 12rpx; align-items: flex-start; font-size: 25rpx; line-height: 1.5; }
+.issue-row + .issue-row { margin-top: 8rpx; }
+.issue-row .k { flex-shrink: 0; width: 72rpx; color: var(--ink-3); }
+.issue-row .v { flex: 1; color: var(--ink-2); word-break: break-all; }
+.issue-row .v-strong { color: #9E2A1B; font-weight: 600; }
+.issue-row .ml-8 { margin-left: 8rpx; }
+
+/* ⑤ 页脚：时间 + 热度 */
+.foot-line {
+  display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap;
+  margin-top: 14rpx; font-size: 22rpx; color: var(--ink-3);
+}
+.foot-line .dot { color: var(--ink-3); }
+
+/* ⑥ 操作区 */
+.item .actions { display: flex; gap: 16rpx; margin-top: 16rpx; justify-content: flex-end; }
+
+.btn-sm {
+  padding: 8rpx 24rpx; font-size: 24rpx; border-radius: 30rpx; text-align: center;
+  border: 1rpx solid var(--line);
+}
+.btn-sm.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-sm.btn-ghost { background: #fff; color: var(--primary); border-color: var(--primary); }
+.btn-sm.btn-danger { background: #FBE0DC; color: var(--danger); border-color: var(--danger); }
+
+.tag {
+  display: inline-block; padding: 4rpx 14rpx; border-radius: 8rpx;
+  font-size: 22rpx; margin-left: 12rpx;
+}
+.tag-success { background: #DEF7F2; color: var(--success); }
+.tag-warn { background: #FFF1D6; color: var(--warning); }
+.tag-gray { background: #f2eadc; color: var(--text-2); }
+
+.empty { text-align: center; padding: 80rpx 32rpx; color: var(--text-3); }
+.empty .title { font-size: 28rpx; }
+.loading { text-align: center; padding: 24rpx; color: var(--text-3); font-size: 24rpx; }

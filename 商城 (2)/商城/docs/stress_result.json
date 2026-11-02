@@ -1,0 +1,244 @@
+{
+  "startedAt": "2026-09-17T07:09:20.482Z",
+  "p1_client": [
+    {
+      "concurrency": 30,
+      "runs": [
+        {
+          "n": 30,
+          "ok": 30,
+          "err": 0,
+          "p50": 1772,
+          "p95": 2674,
+          "max": 2769,
+          "wall": 2773,
+          "errSamples": []
+        },
+        {
+          "n": 30,
+          "ok": 30,
+          "err": 0,
+          "p50": 1155,
+          "p95": 1900,
+          "max": 1912,
+          "wall": 1913,
+          "errSamples": []
+        }
+      ]
+    },
+    {
+      "concurrency": 40,
+      "runs": [
+        {
+          "n": 40,
+          "ok": 34,
+          "err": 6,
+          "p50": 1529,
+          "p95": 2471,
+          "max": 2471,
+          "wall": 2473,
+          "errSamples": [
+            {
+              "ok": false,
+              "ms": 2470,
+              "err": "cloud.callFunction:fail -404006 empty poll result base resp. "
+            },
+            {
+              "ok": false,
+              "ms": 2470,
+              "err": "cloud.callFunction:fail -404006 empty poll result base resp. "
+            }
+          ]
+        },
+        {
+          "__evalErr": "timeout waiting for automator response"
+        }
+      ]
+    }
+  ],
+  "p2_counts": {
+    "result": {
+      "mode": "count",
+      "counts": {
+        "goods": {
+          "total": 13,
+          "ms": 144
+        },
+        "users": {
+          "total": 3,
+          "ms": 31
+        },
+        "orders": {
+          "total": 3,
+          "ms": 39
+        },
+        "conversations": {
+          "total": 1,
+          "ms": 52
+        },
+        "messages": {
+          "total": 50,
+          "ms": 44
+        },
+        "favorites": {
+          "total": 3,
+          "ms": 37
+        },
+        "reports": {
+          "total": 6,
+          "ms": 40
+        },
+        "reviews": {
+          "total": 0,
+          "ms": 42
+        }
+      },
+      "wallMs": 429
+    }
+  },
+  "p3_db": [
+    {
+      "concurrency": 100,
+      "runs": [
+        {
+          "result": {
+            "mode": "db",
+            "school": "清华大学",
+            "skip": 0,
+            "pageSize": 20,
+            "concurrency": 100,
+            "rounds": 1,
+            "rowsReturned": 6,
+            "avgBatchMs": 1456,
+            "batchMs": [
+              1456
+            ],
+            "wallMs": 1457,
+            "total": 100,
+            "ok": 100,
+            "err": 0,
+            "errRate": 0,
+            "minMs": 966,
+            "p50Ms": 1239,
+            "p95Ms": 1389,
+            "maxMs": 1441,
+            "errSamples": []
+          }
+        },
+        {
+          "result": {
+            "mode": "db",
+            "school": "清华大学",
+            "skip": 0,
+            "pageSize": 20,
+            "concurrency": 100,
+            "rounds": 1,
+            "rowsReturned": 6,
+            "avgBatchMs": 1187,
+            "batchMs": [
+              1187
+            ],
+            "wallMs": 1187,
+            "total": 100,
+            "ok": 100,
+            "err": 0,
+            "errRate": 0,
+            "minMs": 876,
+            "p50Ms": 1070,
+            "p95Ms": 1171,
+            "maxMs": 1181,
+            "errSamples": []
+          }
+        }
+      ]
+    }
+  ],
+  "p3_deep": [
+    {
+      "skip": 0,
+      "r": {
+        "result": {
+          "mode": "db",
+          "school": "清华大学",
+          "skip": 0,
+          "pageSize": 20,
+          "concurrency": 5,
+          "rounds": 1,
+          "rowsReturned": 6,
+          "avgBatchMs": 45,
+          "batchMs": [
+            45
+          ],
+          "wallMs": 45,
+          "total": 5,
+          "ok": 5,
+          "err": 0,
+          "errRate": 0,
+          "minMs": 28,
+          "p50Ms": 29,
+          "p95Ms": 44,
+          "maxMs": 44,
+          "errSamples": []
+        }
+      }
+    },
+    {
+      "skip": 500,
+      "r": {
+        "result": {
+          "mode": "db",
+          "school": "清华大学",
+          "skip": 500,
+          "pageSize": 20,
+          "concurrency": 5,
+          "rounds": 1,
+          "rowsReturned": 0,
+          "avgBatchMs": 45,
+          "batchMs": [
+            45
+          ],
+          "wallMs": 45,
+          "total": 5,
+          "ok": 5,
+          "err": 0,
+          "errRate": 0,
+          "minMs": 28,
+          "p50Ms": 39,
+          "p95Ms": 44,
+          "maxMs": 44,
+          "errSamples": []
+        }
+      }
+    },
+    {
+      "skip": 2000,
+      "r": {
+        "result": {
+          "mode": "db",
+          "school": "清华大学",
+          "skip": 2000,
+          "pageSize": 20,
+          "concurrency": 5,
+          "rounds": 1,
+          "rowsReturned": 0,
+          "avgBatchMs": 39,
+          "batchMs": [
+            39
+          ],
+          "wallMs": 39,
+          "total": 5,
+          "ok": 5,
+          "err": 0,
+          "errRate": 0,
+          "minMs": 36,
+          "p50Ms": 37,
+          "p95Ms": 38,
+          "maxMs": 38,
+          "errSamples": []
+        }
+      }
+    }
+  ],
+  "school": "清华大学",
+  "finishedAt": "2026-09-17T07:09:55.730Z"
+}

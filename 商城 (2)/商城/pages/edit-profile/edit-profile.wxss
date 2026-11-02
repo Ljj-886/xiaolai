@@ -1,0 +1,103 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 32rpx 0 calc(160rpx + env(safe-area-inset-bottom)) 0;
+}
+
+/* 仿微信个人资料：每个字段独占一行，灰底分隔 */
+.row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid var(--line);
+  min-height: 96rpx;
+}
+.row:first-of-type { border-top: 1rpx solid var(--line); }
+.row-label {
+  width: 160rpx;
+  color: var(--text-2);
+  font-size: 30rpx;
+  flex-shrink: 0;
+}
+.row-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12rpx;
+}
+.row-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: var(--text-1);
+  background: transparent;
+  text-align: right;
+}
+.row-picker {
+  flex: 1;
+}
+.picker-val {
+  text-align: right;
+  color: var(--text-1);
+  font-size: 30rpx;
+}
+.placeholder {
+  color: #c9b49a;
+}
+.row-value {
+  flex: 1;
+  text-align: right;
+  font-size: 30rpx;
+  color: var(--text-2);
+}
+.row-value.locked {
+  color: #b39b80;
+}
+.row-lock {
+  color: var(--primary);
+  font-size: 26rpx;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+.arrow {
+  color: #c9b49a;
+  font-size: 32rpx;
+  font-weight: 300;
+  margin-left: 8rpx;
+  flex-shrink: 0;
+}
+
+/* 头像按钮：button 默认样式清掉 */
+.avatar-btn {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.avatar-btn::after { border: 0; }
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 16rpx;
+  background: #f5eada;
+  flex-shrink: 0;
+}
+
+/* 提示文字 */
+.hint {
+  padding: 24rpx 32rpx;
+  color: var(--text-3);
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+/* 底部保存按钮 */
+.bottom-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: #fff;
+  padding: 16rpx 32rpx calc(16rpx + env(safe-area-inset-bottom)) 32rpx;
+  border-top: 1rpx solid var(--line);
+}

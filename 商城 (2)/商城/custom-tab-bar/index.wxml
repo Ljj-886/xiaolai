@@ -1,0 +1,16 @@
+<view class="tab-bar">
+  <view class="tab-item {{selected === index ? 'on' : ''}}"
+        wx:for="{{list}}" wx:key="pagePath"
+        data-index="{{index}}" data-path="{{item.pagePath}}"
+        bindtap="onTap" hover-class="tab-hover" hover-stay-time="60">
+    <!-- .tab-chip = 手绘卡通"气泡"底托：内联 style 注入该格子的 pastel 底色（bg 字段），
+         图标落在气泡里 → 底色与图标形成强对比；笔触质感/描边在 wxss 的 .tab-chip 统一定义 -->
+    <view class="tab-chip" style="background-color:{{item.bg}}">
+      <view class="tab-ico-wrap">
+        <image class="tab-ico" src="{{selected === index ? item.iconOn : item.icon}}" mode="aspectFit"/>
+        <view class="tab-badge" wx:if="{{item.badge && unread > 0}}">{{unread > 99 ? '99+' : unread}}</view>
+      </view>
+    </view>
+    <text class="tab-txt">{{item.text}}</text>
+  </view>
+</view>

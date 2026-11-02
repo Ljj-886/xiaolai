@@ -1,0 +1,18 @@
+.para {
+  font-size: 26rpx;
+  color: #6b543f;
+  line-height: 1.9;
+  margin-bottom: 16rpx;
+}
+.para:last-child { margin-bottom: 0; }
+.para-strong {
+  font-size: 26rpx;
+  color: #D85A30;
+  line-height: 1.9;
+  margin-bottom: 16rpx;
+}
+.contact {
+  font-size: 26rpx;
+  color: #6b543f;
+  line-height: 1.9;
+}

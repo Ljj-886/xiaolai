@@ -1,0 +1,153 @@
+<view class="page">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-bg"></view>
+    <block wx:if="{{logged}}">
+      <view class="profile">
+        <image class="avatar" src="{{avatarErr ? defaultAvatar : (user.avatarUrl || defaultAvatar)}}" mode="aspectFill" bindtap="editProfile" binderror="onAvatarErr"/>
+        <view class="info">
+          <view class="name-row">
+            <text class="name">{{user.nickName || '同学'}}</text>
+            <text wx:if="{{user.verified}}" class="tag tag-success">校园认证</text>
+            <text wx:else class="tag tag-warn" bindtap="goVerify">未认证</text>
+          </view>
+          <view class="text-sm mt-8" style="opacity:0.9">{{user.school || '请完成校园认证'}}</view>
+        </view>
+        <text class="text-bold" style="font-size:48rpx" bindtap="editProfile">›</text>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="login-hint">
+        <image class="avatar" src="{{defaultAvatar}}" mode="aspectFill"/>
+        <view class="info">
+          <view class="name-row">
+            <text class="name text-bold">未登录</text>
+          </view>
+          <view class="text-sm mt-8" style="opacity:0.9">请使用微信账号登录</view>
+        </view>
+        <view class="btn-sm btn-primary" bindtap="goLogin" hover-class="press" hover-stay-time="80">登录</view>
+      </view>
+    </block>
+
+    <view class="stats">
+      <view class="stat" bindtap="goCredit">
+        <text class="num">{{user.credit || 100}}</text>
+        <text class="text-sm">信用分</text>
+      </view>
+      <view class="stat" bindtap="goOrder" data-role="seller" data-status="completed">
+        <text class="num">{{user.soldCount || 0}}</text>
+        <text class="text-sm">已卖出</text>
+      </view>
+      <view class="stat" bindtap="goMyGoods" data-status="onSale">
+        <text class="num">{{user.onSaleCount || 0}}</text>
+        <text class="text-sm">发布中</text>
+      </view>
+      <view class="stat" bindtap="goOrder" data-role="buyer" data-status="completed">
+        <text class="num">{{user.boughtCount || 0}}</text>
+        <text class="text-sm">已买到</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的订单 -->
+  <view class="card mt-24">
+    <view class="flex-between">
+      <text class="text-bold">我的订单</text>
+      <text class="text-3 text-sm" bindtap="goOrder" data-role="buyer">全部 ›</text>
+    </view>
+    <view class="order-grid">
+      <view class="order-cell" bindtap="goOrder" data-role="buyer" data-status="pending" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_order_pending.png" mode="aspectFit"/>
+        <text class="text-sm">待确认</text>
+      </view>
+      <view class="order-cell" bindtap="goOrder" data-role="buyer" data-status="meeting" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_order_meeting.png" mode="aspectFit"/>
+        <text class="text-sm">待见面</text>
+      </view>
+      <view class="order-cell" bindtap="goOrder" data-role="buyer" data-status="completed" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_order_completed.png" mode="aspectFit"/>
+        <text class="text-sm">已完成</text>
+      </view>
+      <view class="order-cell" bindtap="goOrder" data-role="seller" data-status="" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_order_sold.png" mode="aspectFit"/>
+        <text class="text-sm">我卖出的</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的资产 -->
+  <view class="card mt-24">
+    <view class="text-bold mb-16">我的</view>
+    <view class="cell-list">
+      <view class="cell" bindtap="goMyGoods" data-status="onSale">
+        <image class="emoji" src="/images/ico_order_sold.png" mode="aspectFit"/>
+        <text class="flex-1">在售商品</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="goMyGoods" data-status="sold">
+        <image class="emoji" src="/images/ico_order_completed.png" mode="aspectFit"/>
+        <text class="flex-1">已售出</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="goFavorite">
+        <image class="emoji" src="/images/ico_fav_on.png" mode="aspectFit"/>
+        <text class="flex-1">我的收藏</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="goMyWants">
+        <image class="emoji" src="/images/ico_want_on.png" mode="aspectFit"/>
+        <text class="flex-1">我的求购</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="goVerify">
+        <image class="emoji" src="/images/ico_cap.png" mode="aspectFit"/>
+        <text class="flex-1">学生认证</text>
+        <text class="tag {{user.verified ? 'tag-success' : 'tag-warn'}}">{{user.verified ? '已认证' : '去认证'}}</text>
+        <text class="text-3">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="card mt-24">
+    <view class="cell-list">
+      <view class="cell" bindtap="goAdmin" wx:if="{{user.isAdmin}}">
+        <image class="emoji" src="/images/ico_shield.png" mode="aspectFit"/>
+        <text class="flex-1">管理后台</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="editProfile">
+        <image class="emoji" src="/images/ico_edit.png" mode="aspectFit"/>
+        <text class="flex-1">编辑资料</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="goAgreement">
+        <image class="emoji" src="/images/ico_doc.png" mode="aspectFit"/>
+        <text class="flex-1">发布协议</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="clearCache">
+        <image class="emoji" src="/images/ico_trash.png" mode="aspectFit"/>
+        <text class="flex-1">清除缓存</text>
+        <text class="text-3 text-sm">遇到显示异常时可尝试</text>
+      </view>
+      <view class="cell" bindtap="goFeedback">
+        <image class="emoji" src="/images/ico_megaphone.png" mode="aspectFit"/>
+        <text class="flex-1">意见反馈</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="showAbout">
+        <image class="emoji" src="/images/ico_info.png" mode="aspectFit"/>
+        <text class="flex-1">关于校园集市</text>
+        <text class="text-3">›</text>
+      </view>
+      <view class="cell" bindtap="logout" wx:if="{{logged}}">
+        <image class="emoji" src="/images/ico_exit.png" mode="aspectFit"/>
+        <text class="flex-1">退出登录</text>
+        <text class="text-3">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="text-3 text-sm text-center" style="padding:40rpx 0">校园集市 v{{version}}</view>
+</view>

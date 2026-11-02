@@ -1,0 +1,78 @@
+<view class="page">
+  <nav-bar title="用户管理" back/>
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{active === item.key ? 'on' : ''}}"
+          bindtap="switchTab" data-tab="{{item.key}}" hover-class="press" hover-stay-time="80">{{item.name}}</view>
+  </scroll-view>
+
+  <view class="list">
+    <block wx:if="{{list.length}}">
+      <!-- 整卡可点击 → 查看该用户的公开主页（与小程序端一致） -->
+      <view wx:for="{{list}}" wx:key="_openid" class="card item"
+            bindtap="goProfile" data-openid="{{item._openid}}" hover-class="card-hover" hover-stay-time="80">
+
+        <!-- ① 身份行：头像 + 昵称 + 认证/封禁标签 + 信用 -->
+        <view class="row-head">
+          <image class="av" src="{{item.avatar}}" mode="aspectFill" binderror="onAvatarErr" data-openid="{{item._openid}}"/>
+          <view class="head-main">
+            <view class="name-line">
+              <text class="name ellipsis">{{item.nickName || '(未命名)'}}</text>
+              <text wx:if="{{item.banned}}" class="tag tag-danger">已封禁</text>
+              <text wx:elif="{{item.verifyText}}" class="tag {{item.verifyCls}}">{{item.verifyText}}</text>
+            </view>
+            <!-- ② 学校 / 学号（身份核验关键信息） -->
+            <view class="meta-line">
+              <text class="ellipsis">{{item.school || '未填写学校'}}</text>
+              <text class="dot">·</text>
+              <text>学号 {{item.studentId || '—'}}</text>
+              <text wx:if="{{item.education}}" class="dot">·</text>
+              <text wx:if="{{item.education}}">{{item.education}}</text>
+            </view>
+          </view>
+          <!-- 信用分：独立右侧，异常时高亮 -->
+          <view class="credit">
+            <text class="credit-num {{item.credit < 60 ? 'credit-low' : ''}}">{{item.credit}}</text>
+            <text class="credit-l">信用</text>
+          </view>
+        </view>
+
+        <!-- ③ 数据行：商品统计（按 openid 精确统计） -->
+        <view class="data-line">
+          <text>商品 <text class="data-n">{{item.goodsCount || 0}}</text></text>
+          <text class="dot">·</text>
+          <text>已售 <text class="data-n">{{item.soldCount || 0}}</text></text>
+          <text class="dot">·</text>
+          <text>注册 {{item.createdAtText}}</text>
+        </view>
+
+        <!-- ④ 问题区块：封禁原因与时间（判断是否解封的依据） -->
+        <view class="issue" wx:if="{{item.banned}}">
+          <view class="issue-row">
+            <text class="k">封禁</text>
+            <text class="v v-strong">{{item.bannedReason || '未填写原因'}}</text>
+          </view>
+          <view class="issue-row" wx:if="{{item.bannedAtText}}">
+            <text class="k">时间</text>
+            <text class="v">{{item.bannedAtText}}</text>
+          </view>
+        </view>
+
+        <!-- ⑤ 操作区 -->
+        <view class="actions">
+          <block wx:if="{{item.banned}}">
+            <view class="btn-sm btn-danger" catchtap="clear" data-openid="{{item._openid}}" data-nick="{{item.nickName}}" hover-class="press" hover-stay-time="80">清退</view>
+            <view class="btn-sm btn-primary" catchtap="unban" data-openid="{{item._openid}}" hover-class="press" hover-stay-time="80">解封</view>
+          </block>
+          <block wx:else>
+            <view class="btn-sm btn-ghost" catchtap="ban" data-openid="{{item._openid}}" hover-class="press" hover-stay-time="80">封禁</view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{!list.length}}" class="empty"><view class="title">暂无用户</view></view>
+    <view wx:elif="{{!hasMore}}" class="loading">没有更多了</view>
+  </view>
+</view>

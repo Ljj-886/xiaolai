@@ -1,0 +1,132 @@
+<view class="page">
+  <nav-bar title="商品详情" back/>
+  <block wx:if="{{item}}">
+    <!-- 图片轮播：求购允许不传图（images 为空），此时不能渲染 swiper ——
+         否则既会空出一大片白块，计数器还会显示「1/0」。改为求购专用占位区。 -->
+    <block wx:if="{{item.images && item.images.length}}">
+      <swiper class="hero" indicator-dots autoplay circular interval="3000" bindchange="onSwiperChange">
+        <swiper-item wx:for="{{item.images}}" wx:key="*this" wx:for-index="idx">
+          <!-- 加载失败（存储临时链接过期/服务不可用）→ 回退占位图，避免整块留白 -->
+          <image class="hero-img" src="{{imgErr[idx] ? defaultCover : item}}" mode="aspectFill"
+                 bindtap="previewImage" data-url="{{item}}" binderror="onHeroErr" data-idx="{{idx}}"/>
+        </swiper-item>
+      </swiper>
+      <view class="hero-indicator">{{swiperCurrent + 1}}/{{item.images.length}}</view>
+    </block>
+    <view class="hero-want" wx:else>
+      <text class="hero-want-ico">🔍</text>
+      <text class="hero-want-t">求购商品 · 暂无图片</text>
+      <text class="hero-want-s">卖家没有上传参考图</text>
+    </view>
+
+    <!-- 主信息 -->
+    <view class="card info">
+      <view class="price-row" wx:if="{{item.type !== 'want'}}">
+        <text class="price-symbol price">¥</text>
+        <text class="price price-num">{{priceRange}}</text>
+        <text class="price-tip" wx:if="{{item.originalPrice}}">可小刀</text>
+      </view>
+      <view class="price-row" wx:else>
+        <text class="price price-num">求购</text>
+        <text class="text-3" wx:if="{{item.price}}">预算 ¥{{item.price}}</text>
+        <text class="text-3" wx:else>预算面议</text>
+      </view>
+      <view class="title">{{item.title}}<text class="tag tag-want" wx:if="{{item.type === 'want'}}">求购</text></view>
+      <view class="meta mt-16">
+        <text class="tag tag-line" wx:if="{{condText}}">{{condText}}</text>
+        <text class="tag tag-line" wx:if="{{categoryText}}">{{categoryText}}</text>
+        <text class="text-3 text-sm">{{item.viewCount || 0}}浏览 · {{item.favCount || 0}}收藏{{item.type === 'want' ? '' : ' · ' + (item.wantCount || 0) + '想要'}}</text>
+      </view>
+    </view>
+
+    <!-- 描述 -->
+    <view class="card">
+      <view class="text-bold mb-16">商品描述</view>
+      <view class="desc">{{item.desc || '卖家很懒，什么也没写~'}}</view>
+    </view>
+
+    <!-- 自提点 -->
+    <view class="card" bindtap="choosePickup" wx:if="{{item.pickupPoint}}">
+      <view class="flex-between">
+        <view>
+          <view class="text-3 text-sm">自提点</view>
+          <view class="text-bold mt-8">{{item.pickupPoint}}</view>
+        </view>
+        <text class="text-3">›</text>
+      </view>
+    </view>
+
+    <!-- 卖家 -->
+    <view class="card seller" bindtap="goSeller" data-id="{{item._openid}}">
+      <image class="avatar" src="{{avatarErr ? defaultAvatar : (item.sellerInfo.avatarUrl || defaultAvatar)}}"
+             mode="aspectFill" binderror="onAvatarErr"/>
+      <view class="flex-1">
+        <view class="flex" style="align-items:center;gap:8rpx">
+          <text class="text-bold">{{item.sellerInfo.nickName || '同学'}}</text>
+          <text class="tag tag-success" wx:if="{{item.sellerInfo.verified}}">校园认证</text>
+        </view>
+        <view class="text-3 text-sm mt-8">信用 {{item.sellerInfo.credit || 100}}</view>
+        <view class="text-3 text-sm mt-8" wx:if="{{item.sellerInfo.school}}">学校：{{item.sellerInfo.school}}</view>
+      </view>
+      <text class="text-3">›</text>
+    </view>
+
+    <view wx:if="{{!isOwner && item.status === 'onSale'}}" class="hint card text-3 text-sm">
+      同校自提更安心 · 当面验货 · 确认无误再交接
+    </view>
+
+    <!-- 卖家视角：为什么这件商品没有出现在首页／为什么被处理（与后台信息一致） -->
+    <view wx:if="{{isOwner && ownerNotice}}" class="notice card">
+      <view class="notice-head">
+        <text class="notice-ico">{{ownerNotice.icon}}</text>
+        <text class="notice-title">{{ownerNotice.title}}</text>
+      </view>
+      <view wx:if="{{ownerNotice.reason}}" class="notice-row">
+        <text class="notice-k">{{ownerNotice.reasonLabel}}</text>
+        <text class="notice-v">{{ownerNotice.reason}}</text>
+      </view>
+      <view wx:if="{{ownerNotice.desc}}" class="notice-desc">{{ownerNotice.desc}}</view>
+    </view>
+
+    <view style="height:160rpx"></view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-bar" wx:if="{{!isOwner}}">
+      <view class="bar-icon" bindtap="toggleFav" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="{{item.faved ? '/images/ico_fav_on.png' : '/images/ico_fav.png'}}" mode="aspectFit"/>
+        <text class="text-sm">{{item.faved ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="bar-icon" bindtap="toggleWant" wx:if="{{item.type !== 'want'}}" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="{{item.wanted ? '/images/ico_want_on.png' : '/images/ico_want.png'}}" mode="aspectFit"/>
+        <text class="text-sm">{{item.wanted ? '已想要' : '想要'}}</text>
+      </view>
+      <view class="bar-icon" bindtap="goChat" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_chat.png" mode="aspectFit"/>
+        <text class="text-sm">私聊</text>
+      </view>
+      <view class="bar-icon" bindtap="goReport" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_report.png" mode="aspectFit"/>
+        <text class="text-sm">举报</text>
+      </view>
+      <view class="btn-buy" wx:if="{{item.type === 'want'}}" bindtap="goChat" hover-class="press" hover-stay-time="80">我可以提供</view>
+      <view class="btn-buy" wx:else bindtap="goBuy" hover-class="press" hover-stay-time="80">预约自提</view>
+    </view>
+    <view class="bottom-bar" wx:elif="{{isOwner}}">
+      <view class="bar-icon" bindtap="onEdit" hover-class="press" hover-stay-time="80">
+        <image class="emoji" src="/images/ico_edit.png" mode="aspectFit"/>
+        <text class="text-sm">编辑</text>
+      </view>
+      <view class="bar-icon" bindtap="onOff" hover-class="press" hover-stay-time="80">
+        <text class="emoji">{{item.status === 'off' ? '上架' : '下架'}}</text>
+        <text class="text-sm">{{item.status === 'off' ? '重新上架' : '下架'}}</text>
+      </view>
+      <view class="btn-buy" bindtap="goSeller" data-id="{{item._openid}}" hover-class="press" hover-stay-time="80">查看我的主页</view>
+    </view>
+  </block>
+  <block wx:elif="{{loadError}}">
+    <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+  </block>
+  <block wx:else>
+    <empty icon="📭" title="商品不存在或已下架" actionText="返回首页" bind:action="goHome"/>
+  </block>
+</view>

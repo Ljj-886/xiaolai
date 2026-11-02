@@ -1,0 +1,89 @@
+<view class="page">
+  <nav-bar title="{{navTitle}}" back/>
+  <!-- 个人主页 banner（淘宝店铺风的简洁头） -->
+  <view class="banner" wx:if="{{seller}}">
+    <view class="banner-bg"></view>
+    <text wx:if="{{!isSelf}}" class="b-report" bindtap="goReport">举报</text>
+    <view class="banner-inner">
+      <image class="b-avatar" src="{{sellerAvatarErr ? defaultAvatar : (seller.avatarUrl || defaultAvatar)}}" mode="aspectFill" binderror="onSellerAvatarErr"/>
+      <view class="b-info">
+        <view class="b-name">
+          <text class="text-bold" style="font-size:34rpx">{{seller.nickName || '同学'}}</text>
+          <text class="tag tag-success" wx:if="{{seller.verified}}" style="font-size:20rpx;padding:2rpx 10rpx">✓校园认证</text>
+        </view>
+        <view class="text-3 text-sm mt-8">
+          <text wx:if="{{seller.school}}">{{seller.school}}</text>
+          <text wx:if="{{seller.school}}"> · </text>
+          <text>信用 {{seller.credit || 100}}</text>
+        </view>
+        <view class="text-3 text-sm mt-8" wx:if="{{seller.createdAt}}">加入 {{seller.createdAtText}}</view>
+      </view>
+    </view>
+    <!-- 3 张数据卡（仿淘宝店铺信誉/描述/服务） -->
+    <view class="banner-stats">
+      <view class="b-stat">
+        <text class="b-num">{{seller.onSaleCount || 0}}</text>
+        <text class="text-3 text-sm">在售</text>
+      </view>
+      <view class="b-stat b-stat-mid">
+        <text class="b-num">{{seller.soldCount || 0}}</text>
+        <text class="text-3 text-sm">已售</text>
+      </view>
+      <view class="b-stat">
+        <text class="b-num">{{seller.credit || 100}}</text>
+        <text class="text-3 text-sm">信用分</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品状态 tab -->
+  <view class="tabs card mt-16">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{current === item.key ? 'active' : ''}}" bindtap="setTab" data-key="{{item.key}}" hover-class="press" hover-stay-time="80">
+      <text>{{item.label}}</text>
+      <text class="tab-num" wx:if="{{item.key === 'onSale' && seller.onSaleCount}}">{{seller.onSaleCount}}</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选（仅在售 tab 显示） -->
+  <view class="cats" wx:if="{{current === 'onSale'}}">
+    <text wx:for="{{categories}}" wx:key="name"
+          class="cat {{cat === item.key ? 'active' : ''}}"
+          bindtap="pickCat" data-c="{{item.key}}">{{item.name}}</text>
+  </view>
+
+  <!-- 审核中说明：新发布的商品先进待审核，通过后才会出现在首页 -->
+  <view wx:if="{{current === 'pending'}}"
+        style="margin:16rpx 24rpx 0;padding:16rpx 20rpx;background:#FFF7E6;color:#B26A00;border-radius:12rpx;font-size:24rpx;line-height:1.5">
+    ⏳ 新发布的商品会先进入审核，<text style="font-weight:600">审核通过后自动上架到首页</text>，无需重复发布。若长时间未通过，可联系管理员。
+  </view>
+
+  <view wx:if="{{list.length}}">
+    <view class="grid mt-16">
+      <view class="grid-cell" wx:for="{{list}}" wx:key="_id">
+        <goods-card item="{{item}}" bind:tap="goDetail" data-id="{{item._id}}"/>
+        <!-- 下架/禁售原因：卖家必须知道「为什么被下架」，否则会反复重新上架 -->
+        <view wx:if="{{isSelf && item.reasonText}}" class="reason-line">
+          <text class="reason-k">{{item.reasonLabel}}</text>
+          <text class="reason-v">{{item.reasonText}}</text>
+        </view>
+        <view class="flex mt-8" wx:if="{{isSelf}}" style="gap:12rpx">
+          <view class="btn-mini" wx:if="{{item.status === 'onSale'}}" catchtap="offGoods" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">下架</view>
+          <view class="btn-mini" wx:elif="{{item.status === 'off'}}" catchtap="onGoods" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">重新上架</view>
+          <view class="btn-mini btn-mini-light" catchtap="goEdit" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">编辑</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+    <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+  </view>
+  <view wx:elif="{{loadError}}">
+    <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+  </view>
+  <view wx:else>
+    <empty icon="{{current === 'pending' ? '⏳' : '📦'}}"
+           title="{{current === 'pending' ? '暂无待审核商品' : (isWant ? '还没有求购' : '还没有商品')}}"
+           desc="{{current === 'pending' ? '发布后商品会先进入审核，通过后自动上架，无需重复发布' : (cat ? '该分类下暂无内容' : (isSelf ? (isWant ? '去发布一条求购吧' : '去发布闲置吧') : '该用户还没有上架内容哦'))}}"
+           actionText="{{isSelf ? '去发布' : ''}}" bind:action="goPublish"/>
+  </view>
+</view>

@@ -1,0 +1,105 @@
+<view class="page">
+  <nav-bar title="管理后台" back/>
+
+  <!-- ① 待处理：后台第一优先级。有活要干时置顶且高亮 -->
+  <view class="card todo-card {{totalTodo ? 'has-work' : ''}}">
+    <view class="todo-head">
+      <text class="text-bold">待处理</text>
+      <text class="todo-total" wx:if="{{totalTodo}}">{{totalTodo}} 项</text>
+      <text class="todo-total todo-clear" wx:else>全部已处理 🎉</text>
+    </view>
+    <view class="todo-row" wx:for="{{todos}}" wx:key="key"
+          hover-class="row-hover" bindtap="goPage" data-page="{{item.page}}" data-tab="{{item.tab}}">
+      <view class="flex-1">
+        <view class="todo-label">{{item.label}}</view>
+        <view class="todo-hint">{{item.hint}}</view>
+      </view>
+      <view class="count {{item.count ? 'has' : ''}}">{{item.count || '0'}}</view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- ② 数据概览：整体盘子（背景信息，弱化） -->
+  <view class="card mt-24">
+    <view class="text-bold mb-16">数据概览</view>
+
+    <view class="ov-row" hover-class="row-hover" bindtap="goPage" data-page="admin-users">
+      <text class="ov-k">用户</text>
+      <view class="ov-v">
+        <text class="ov-num">{{stats.users || 0}}</text>
+        <text class="ov-sub" wx:if="{{stats.banned}}">封禁 {{stats.banned}}</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <view class="ov-row" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="all">
+      <text class="ov-k">商品总数</text>
+      <view class="ov-v">
+        <text class="ov-num">{{stats.goods || 0}}</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+
+    <!-- 商品按状态细分：一眼看出结构（此前挤在一个小字里） -->
+    <view class="ov-grid">
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="onSale">
+        <text class="ov-cell-num">{{stats.onSale || 0}}</text>
+        <text class="ov-cell-l">在售</text>
+      </view>
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="pending">
+        <text class="ov-cell-num">{{stats.pendingGoods || 0}}</text>
+        <text class="ov-cell-l">待审核</text>
+      </view>
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="off">
+        <text class="ov-cell-num">{{stats.off || 0}}</text>
+        <text class="ov-cell-l">已下架</text>
+      </view>
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="banned">
+        <text class="ov-cell-num">{{stats.bannedGoods || 0}}</text>
+        <text class="ov-cell-l">禁售</text>
+      </view>
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="sold">
+        <text class="ov-cell-num">{{stats.sold || 0}}</text>
+        <text class="ov-cell-l">已售</text>
+      </view>
+      <view class="ov-cell" hover-class="row-hover" bindtap="goPage" data-page="admin-goods" data-tab="recheck">
+        <text class="ov-cell-num">{{stats.recheckGoods || 0}}</text>
+        <text class="ov-cell-l">待复核</text>
+      </view>
+    </view>
+
+    <view class="ov-row" hover-class="row-hover" bindtap="goPage" data-page="admin-reviews" data-tab="report">
+      <text class="ov-k">举报累计</text>
+      <view class="ov-v">
+        <text class="ov-num">{{stats.reports || 0}}</text>
+        <text class="ov-sub" wx:if="{{stats.pendingReports}}">待处理 {{stats.pendingReports}}</text>
+      </view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- ③ 操作日志：审计记录（谁在何时查看敏感资料 / 执行了哪些管理动作） -->
+  <view class="card mt-24">
+    <view class="todo-row" hover-class="row-hover" bindtap="toggleLogs">
+      <view class="flex-1"><text class="text-bold">操作日志</text></view>
+      <text class="arrow">{{logsOpen ? '⌄' : '›'}}</text>
+    </view>
+    <block wx:if="{{logsOpen}}">
+      <view wx:if="{{logsLoading}}" class="loading">加载中…</view>
+      <view wx:elif="{{!logs.length}}" class="log-empty">暂无审计记录</view>
+      <view wx:else>
+        <view wx:for="{{logs}}" wx:key="_id" class="log-row">
+          <text class="log-time">{{item.timeText}}</text>
+          <text class="log-act">{{item.actionText}}</text>
+          <text wx:if="{{item.targetText}}" class="log-target">…{{item.targetText}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- ④ 初始化（低频工具，放最后） -->
+  <view class="card mt-24">
+    <view class="text-bold mb-16">初始化</view>
+    <view class="btn btn-ghost" bindtap="initData" hover-class="press" hover-stay-time="80">写入分类与自提点（如尚未写入）</view>
+  </view>
+</view>

@@ -1,0 +1,23 @@
+<view class="page">
+  <nav-bar title="我的收藏" back/>
+  <view wx:if="{{list.length}}">
+    <view class="grid">
+      <view class="grid-cell" wx:for="{{list}}" wx:key="_id">
+        <goods-card item="{{item}}" bind:tap="goDetail" data-id="{{item._id}}"/>
+        <!-- 快捷取消收藏：此前必须进商品详情才能取消，操作路径太长 -->
+        <view class="flex mt-8" style="gap:12rpx">
+          <view class="btn-mini btn-mini-light" catchtap="unfav" data-id="{{item._id}}" data-index="{{index}}" hover-class="press" hover-stay-time="80">取消收藏</view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+    <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+  </view>
+  <view wx:elif="{{loadError}}">
+    <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+  </view>
+  <view wx:else>
+    <empty icon="❤️" title="还没有收藏" desc="去发现喜欢的商品吧" actionText="去逛逛" bind:action="goHome"/>
+  </view>
+</view>

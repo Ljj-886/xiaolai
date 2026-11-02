@@ -1,0 +1,87 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/category/category",
+    "pages/publish/publish",
+    "pages/chat/chat",
+    "pages/mine/mine",
+    "pages/detail/detail",
+    "pages/search/search",
+    "pages/verify/verify",
+    "pages/login/login",
+    "pages/order/order",
+    "pages/order-detail/order-detail",
+    "pages/chatroom/chatroom",
+    "pages/favorite/favorite",
+    "pages/pickup/pickup",
+    "pages/review/review",
+    "pages/report/report",
+    "pages/admin/admin",
+    "pages/admin-goods/admin-goods",
+    "pages/admin-users/admin-users",
+    "pages/admin-reviews/admin-reviews",
+    "pages/edit-profile/edit-profile",
+    "pages/feedback/feedback",
+    "pages/sold/sold",
+    "pages/credit/credit",
+    "pages/agreement/agreement",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FFF9EE",
+    "navigationBarTitleText": "校园集市",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF9EE",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#B39B80",
+    "selectedColor": "#E8542F",
+    "backgroundColor": "#FFF9EE",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab_home.png",
+        "selectedIconPath": "images/tab_home_on.png"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "分类",
+        "iconPath": "images/tab_category.png",
+        "selectedIconPath": "images/tab_category_on.png"
+      },
+      {
+        "pagePath": "pages/publish/publish",
+        "text": "发布",
+        "iconPath": "images/tab_publish.png",
+        "selectedIconPath": "images/tab_publish_on.png"
+      },
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "消息",
+        "iconPath": "images/tab_chat.png",
+        "selectedIconPath": "images/tab_chat_on.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/tab_mine.png",
+        "selectedIconPath": "images/tab_mine_on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "仅在您自定义自提点时，用于选择自提地点"
+    }
+  },
+  "requiredPrivateInfos": ["chooseLocation"],
+  "usingComponents": {}
+}

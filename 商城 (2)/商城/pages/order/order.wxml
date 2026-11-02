@@ -1,0 +1,113 @@
+<view class="page">
+  <nav-bar title="我的订单" back/>
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{current === item.key ? 'active' : ''}}" bindtap="setTab" data-key="{{item.key}}" hover-class="press" hover-stay-time="80">
+      {{item.label}}
+    </view>
+  </view>
+
+  <view wx:if="{{action === 'create' && goods}}">
+    <view class="card">
+      <view class="text-bold mb-16">确认订单</view>
+      <view class="flex" style="gap:16rpx">
+        <image src="{{imgErr.goods ? defaultCover : (goods.cover || defaultCover)}}" mode="aspectFill" class="cover" lazy-load binderror="onCoverErr" data-id="goods"/>
+        <view class="flex-1">
+          <view class="ellipsis-2 text-bold">{{goods.title}}</view>
+          <view class="price-row mt-8">
+            <text class="price-symbol price">¥</text>
+            <text class="price price-num">{{goods.price}}</text>
+            <text class="price-orig" wx:if="{{goods.originalPrice}}">原价 ¥{{goods.originalPrice}}</text>
+          </view>
+          <view class="meta mt-8">
+            <text class="tag tag-line">{{goodsCondText}}</text>
+            <text class="tag tag-line" wx:if="{{goodsCatName}}">{{goodsCatName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="form-item">
+        <text class="label"><text class="required">*</text>自提时间</text>
+        <picker mode="date" value="{{form.meetingTime}}" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onTimeChange">
+          <view class="ipt {{!meetingTimeText ? 'placeholder' : ''}}">{{meetingTimeText || '请选择（一周内）'}}</view>
+        </picker>
+      </view>
+      <view class="form-item" bindtap="choosePickup">
+        <text class="label"><text class="required">*</text>自提点</text>
+        <view class="ipt {{!form.meetingPlace ? 'placeholder' : ''}}">{{form.meetingPlace || '请选择自提点'}}</view>
+      </view>
+      <view class="form-item">
+        <text class="label">买家留言</text>
+        <input class="ipt" placeholder="可填联系方式或约定事项" value="{{form.message}}" bindinput="onInput" data-k="message" maxlength="100"/>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="form-item">
+        <text class="label">交接方式</text>
+        <text class="ipt">同校自提 · 见面验货</text>
+      </view>
+      <view class="form-item">
+        <text class="label">应付</text>
+        <view class="ipt">
+          <text class="price-symbol price">¥</text>
+          <text class="price price-num">{{goods.price}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="height:160rpx"></view>
+    <view class="bottom-bar">
+      <view class="btn btn-primary" bindtap="submit" hover-class="press" hover-stay-time="80">提交订单</view>
+    </view>
+  </view>
+
+  <view wx:else>
+    <view wx:if="{{list.length}}">
+      <view class="card order" wx:for="{{list}}" wx:key="_id" bindtap="goDetail" data-id="{{item._id}}">
+        <view class="flex-between">
+          <text class="text-3 text-sm">订单号 {{item.orderNo}}</text>
+          <text class="tag {{STATUS_ORDER[item.status].cls}}">{{STATUS_ORDER[item.status].text}}</text>
+        </view>
+        <view class="flex mt-16" style="gap:16rpx">
+          <image src="{{imgErr[item._id] ? defaultCover : (item.goodsSnapshot.cover || defaultCover)}}" mode="aspectFill" class="cover" lazy-load binderror="onCoverErr" data-id="{{item._id}}"/>
+          <view class="flex-1">
+            <view class="ellipsis-2">{{item.goodsSnapshot.title}}</view>
+            <view class="price-row mt-8">
+              <text class="price-symbol price">¥</text>
+              <text class="price price-num">{{item.price}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="text-3 text-sm mt-8">提交时间 {{item.createdAtText}}</view>
+        <view class="actions" wx:if="{{role === 'seller' && item.status === 'pending'}}">
+          <view class="btn-sm btn-ghost" catchtap="reject" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">拒绝</view>
+          <view class="btn-sm btn-primary" catchtap="accept" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">接受</view>
+        </view>
+        <view class="actions" wx:elif="{{role === 'buyer' && item.status === 'pending'}}">
+          <view class="btn-sm btn-ghost" catchtap="cancelOrder" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">取消订单</view>
+        </view>
+        <view class="actions" wx:elif="{{item.status === 'meeting'}}">
+          <view class="btn-sm btn-ghost" catchtap="cancelOrder" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">取消订单</view>
+          <view class="btn-sm btn-primary" catchtap="complete" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">标记完成</view>
+        </view>
+        <view class="actions" wx:elif="{{item.status === 'completed' && ((role === 'buyer' && !item.buyerReview) || (role === 'seller' && !item.sellerReview))}}">
+          <view class="btn-sm btn-line" catchtap="goReview" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">评价</view>
+        </view>
+      </view>
+      <view wx:if="{{loading}}" class="loading">加载中…</view>
+      <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+      <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+    </view>
+    <view wx:elif="{{loadError}}">
+      <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+    </view>
+    <view wx:elif="{{loading}}">
+      <view class="loading">加载中…</view>
+    </view>
+    <view wx:else>
+      <empty icon="📋" title="还没有订单" desc="去逛逛吧"/>
+    </view>
+  </view>
+</view>

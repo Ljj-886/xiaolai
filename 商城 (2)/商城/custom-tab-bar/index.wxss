@@ -1,0 +1,88 @@
+/* 自定义 tabBar —— 卡通贴纸风：圆角"贴纸条" + 选中项落进珊瑚气泡 + 点按弹跳 */
+.tab-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  background: var(--bg, #FFF9EE);
+  border-top: 4rpx solid var(--ink, #3D2B1F);
+  border-left: 4rpx solid var(--ink, #3D2B1F);
+  border-right: 4rpx solid var(--ink, #3D2B1F);
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 999;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  padding: 14rpx 0 16rpx;
+}
+.tab-hover { opacity: 0.72; }
+
+.tab-ico-wrap {
+  position: relative;
+  width: 46rpx;
+  height: 46rpx;
+}
+.tab-ico { width: 46rpx; height: 46rpx; }
+
+/* 手绘卡通导航格子（.tab-chip）：每个 tab 一块柔亮 pastel 气泡底托，图标落在里面 */
+.tab-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;            /* 气泡比 46rpx 图标大一圈，留出描边与留白 */
+  height: 72rpx;
+  margin: 0 auto;
+  border: 4rpx solid var(--ink, #3D2B1F);          /* 深棕描边 = 贴纸风轮廓，与全局设计系统一致 */
+  border-radius: 24rpx 20rpx 26rpx 18rpx;           /* 四角不等圆角 → 像手画出来的，不是标准胶囊 */
+  /* 笔触质感：极淡白色高光，模拟手绘颜料不均匀（克制使用，这里是为满足"手绘笔触"诉求的有意例外，非装饰性彩色渐变） */
+  background-image: radial-gradient(circle at 30% 26%, rgba(255,255,255,0.6), rgba(255,255,255,0) 62%);
+  transition: transform .2s ease;
+}
+/* 选中态：轻微放大 + 加粗描边，强调"当前页"（图标颜色随 iconOn 自动变珊瑚橙，无需额外底色） */
+.tab-item.on .tab-chip {
+  transform: translateY(-3rpx) scale(1.06);
+  border-width: 5rpx;
+  animation: tabPop .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+@keyframes tabPop {
+  0% { transform: scale(.82); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.tab-badge {
+  position: absolute;
+  top: -14rpx;
+  right: -18rpx;
+  min-width: 30rpx;
+  height: 30rpx;
+  line-height: 28rpx;
+  padding: 0 6rpx;
+  border-radius: 16rpx;
+  background: var(--danger, #D93B2B);
+  color: #fff;
+  font-size: 18rpx;
+  text-align: center;
+  border: 2rpx solid var(--ink, #3D2B1F);
+  z-index: 2;
+}
+
+.tab-txt {
+  font-size: 20rpx;
+  color: var(--ink-3, #B39B80);
+  line-height: 1.2;
+}
+.tab-item.on .tab-txt {
+  color: var(--primary, var(--primary));
+  font-weight: 500;
+}

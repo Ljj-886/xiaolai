@@ -1,0 +1,31 @@
+server:
+  port: 9090   # 后端端口；小程序前端若改走此后端，需把请求 baseUrl 指向 http://localhost:9090
+
+file:
+  upload-dir: ./uploads   # 图片上传落盘目录（相对于启动后端时的当前目录）
+
+spring:
+  application:
+    name: mall-server
+  servlet:
+    multipart:
+      max-file-size: 10MB     # 单文件上限（默认 1MB，照片容易超）
+      max-request-size: 10MB
+  datasource:
+    # 教室机房 MySQL 5.0.45 兼容配置：
+    #  - 用 5.1.49 驱动（com.mysql.jdbc.Driver），8.x 驱动连不上 5.0
+    #  - 仅用 3 字节 utf8，不碰 utf8mb4（5.0 不支持）
+    url: jdbc:mysql://127.0.0.1:3306/campus_market?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true   # goods_snapshot <-> goodsSnapshot 自动映射
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 开发期打印 SQL，上线可关
+  global-config:
+    db-config:
+      id-type: assign_id      # 主键自赋（与小程序云文档 _id 字符串风格不同，这里用雪花/输入串）
+      table-prefix: ""        # 表名无前缀
+  mapper-locations: classpath*:/mapper/**/*.xml

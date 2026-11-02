@@ -1,0 +1,11 @@
+<view class="empty">
+  <view class="empty-emoji">{{icon || '📭'}}</view>
+  <view class="title">{{title || '暂无内容'}}</view>
+  <view class="desc" wx:if="{{desc}}">{{desc}}</view>
+  <view class="mt-24" wx:if="{{actionText}}">
+    <view class="btn btn-primary" style="display:inline-block;padding:0 40rpx;height:64rpx;line-height:64rpx;font-size:26rpx;border-radius:32rpx;" bindtap="onAction" hover-class="press" hover-stay-time="80">{{actionText}}</view>
+  </view>
+  <view class="mt-24" wx:elif="{{retryText}}">
+    <view class="btn btn-ghost" style="display:inline-block;padding:0 40rpx;height:64rpx;line-height:64rpx;font-size:26rpx;border-radius:32rpx;" bindtap="onRetry" hover-class="press" hover-stay-time="80">{{retryText}}</view>
+  </view>
+</view>

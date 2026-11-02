@@ -1,0 +1,34 @@
+<view class="page">
+  <nav-bar title="选择自提点" back/>
+  <view class="hint card">
+    <view class="text-bold">📍 选择校内自提点</view>
+    <view class="text-3 text-sm mt-8">校园内见面自提更安全，可当面验货</view>
+  </view>
+
+  <!-- 历史自提点（最近 5 条） -->
+  <view wx:if="{{history.length}}" class="card">
+    <view class="text-bold mb-16">🕘 最近使用的自提点</view>
+    <view class="pickup" wx:for="{{history}}" wx:key="*this" data-name="{{item}}" bindtap="choose">
+      <view class="text-bold ellipsis">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 推荐自提点 -->
+  <view class="card">
+    <view class="text-bold mb-16">📌 校内推荐自提点</view>
+    <view class="pickup" wx:for="{{list}}" wx:key="id">
+      <view class="flex-between" data-name="{{item.name}}" bindtap="choose">
+        <view>
+          <view class="text-bold">{{item.name}}</view>
+          <view class="text-3 text-sm mt-8">{{item.desc}}</view>
+        </view>
+        <text class="text-primary" wx:if="{{chosen === item.name}}">✓</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card pickup" bindtap="useLocation">
+    <view class="text-bold">📍 使用当前位置</view>
+    <view class="text-3 text-sm mt-8">获取您的位置信息作为自提点（每次会询问权限）</view>
+  </view>
+</view>

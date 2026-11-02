@@ -1,0 +1,3 @@
+.page { min-height: 100vh; padding: 16rpx 24rpx env(safe-area-inset-bottom); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx; }
+.grid-cell { width: 100%; }

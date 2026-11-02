@@ -1,0 +1,20 @@
+// utils/icon.wxs —— 分类 key → 卡通图标路径的映射
+// 用 WXS 的好处：wxml 里直接调用，不用给页面 JS 加映射逻辑，也不用改数据库里的 icon 字段。
+var CAT = {
+  book: 'cat_book',
+  digital: 'cat_digital',
+  dorm: 'cat_dorm',
+  clothes: 'cat_clothes',
+  sports: 'cat_sports',
+  beauty: 'cat_beauty',
+  bike: 'cat_bike',
+  ticket: 'cat_ticket',
+  life: 'cat_life',
+  other: 'cat_other'
+};
+
+function cat(key) {
+  return '/images/' + (CAT[key] || 'cat_other') + '.png';
+}
+
+module.exports = { cat: cat };

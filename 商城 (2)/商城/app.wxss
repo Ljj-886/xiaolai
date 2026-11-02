@@ -1,0 +1,309 @@
+/**app.wxss**/
+/* ============ 手绘贴纸风（Sticker Doodle）设计令牌 ============
+   风格要点：
+   1) 奶油底 #FFF9EE，不用灰白；
+   2) 描边代替阴影 —— 深棕 --ink 描边撑轮廓，卡片右下加粗模拟贴纸翘边；
+   3) 点缀色收敛为珊瑚橙 --primary，只用于价格 / 主按钮 / 选中态；
+   4) 圆角整体放大，控件偏药丸形。 */
+page {
+  --ink: #3D2B1F;
+  --ink-2: #8A6F55;
+  --ink-3: #B39B80;
+
+  --primary: #E8542F;
+  --primary-light: #FFE3D6;
+  --primary-dark: #C8421F;
+  --success: #2E9E6B;
+  --warning: #D9A11C;
+  --danger: #D93B2B;
+
+  --text: var(--ink);
+  --text-2: var(--ink-2);
+  --text-3: var(--ink-3);
+
+  --line: #E8DCC6;
+  --bg: #FFF9EE;
+  --card: #FFFFFF;
+
+  --radius-sm: 12rpx;
+  --radius: 20rpx;
+  --radius-lg: 28rpx;
+
+  --shadow: none;
+  --shadow-strong: none;
+  /* 自定义 tabBar 的高度：页面内的固定底栏必须抬到它上方，否则会被盖住。
+     实测值 = 边框2×4 + item padding(14+16) + 图标46 + gap6 + 文字行高24 = 114rpx；
+     再加 6rpx 余量吸收「未读角标 top:-14rpx」的上溢，取整 120rpx。
+     改 tabBar 的 padding / 图标尺寸时，务必同步这个值。 */
+  --tabbar-h: 120rpx;
+  --outline: 4rpx solid var(--ink);
+  --outline-thin: 3rpx solid var(--ink);
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+view, text, image, button, input, textarea, scroll-view { box-sizing: border-box; }
+
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-1 { flex: 1; min-width: 0; }
+
+.mt-8 { margin-top: 8rpx; }
+.mt-16 { margin-top: 16rpx; }
+.mt-24 { margin-top: 24rpx; }
+.mt-32 { margin-top: 32rpx; }
+.mb-16 { margin-bottom: 16rpx; }
+.mb-24 { margin-bottom: 24rpx; }
+.p-24 { padding: 24rpx; }
+.p-32 { padding: 32rpx; }
+
+.text-primary { color: var(--primary); }
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.text-2 { color: var(--text-2); }
+.text-3 { color: var(--text-3); }
+.text-sm { font-size: 24rpx; }
+.text-lg { font-size: 32rpx; }
+.text-xl { font-size: 36rpx; }
+.text-2xl { font-size: 44rpx; }
+.text-bold { font-weight: 600; }
+.text-medium { font-weight: 500; }
+.text-center { text-align: center; }
+.ellipsis {
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.ellipsis-2 {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; word-break: break-all;
+}
+
+/* 贴纸卡片：深棕描边，右下加粗做出「翘边」的体积感 */
+.card {
+  background: var(--card);
+  border: 4rpx solid var(--ink);
+  border-right-width: 8rpx;
+  border-bottom-width: 8rpx;
+  border-radius: var(--radius);
+  padding: 24rpx;
+}
+
+/* ============ 按钮系统（手绘贴纸风）============
+   统一规范（全站按钮必须遵循）：
+   · 描边：深棕 --ink；主按钮 4rpx 且右下加粗到 8rpx（贴纸翘边）；小按钮 3rpx
+   · 圆角：大按钮全圆角 44rpx；列表内小按钮 16rpx；胶囊/选择器全圆角
+   · 字体：大按钮 30rpx/500；小按钮 24rpx/500；行高 1，垂直居中
+   · 配色：主=珊瑚实底白字；次=白底珊瑚字；浅=浅珊瑚底深珊瑚字
+   · 禁用：浅暖底 + 弱描边，并**去掉翘边**（视觉上"瘪"下去）
+   · 按压：翘边收平 + 位移 4rpx —— 模拟"把贴纸按平"，全站统一
+   · 反馈走 hover-class="press"（小程序 view 的 :active 不完全可靠，两种机制都写） */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  padding: 0 40rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  line-height: 1;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: 4rpx solid var(--ink);
+  border-right-width: 8rpx;
+  border-bottom-width: 8rpx;
+}
+.btn-ghost {
+  background: #fff;
+  color: var(--primary);
+  border: 4rpx solid var(--ink);
+  border-right-width: 8rpx;
+  border-bottom-width: 8rpx;
+}
+.btn-line {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border: 3rpx solid var(--primary);
+}
+.btn-primary[disabled], .btn-ghost[disabled],
+.btn-primary.btn-disabled, .btn-ghost.btn-disabled {
+  background: #F0D6C8;
+  color: #FFFFFF;
+  border-color: #C9B49A;
+  border-right-width: 4rpx;
+  border-bottom-width: 4rpx;
+}
+.btn-line.btn-disabled { background: #F2EADC; color: var(--ink-3); border-color: #D8C6AA; }
+
+/* 列表内小按钮：白底描边款为默认，加 .btn-sm-solid 变实底主按钮 */
+.btn-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  padding: 0 26rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  line-height: 1;
+  background: #fff;
+  color: var(--primary);
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.btn-sm.btn-sm-solid { background: var(--primary); color: #fff; }
+/* btn-sm 的语义变体：页面里以 .btn-sm.btn-primary / .btn-ghost / .btn-line / .btn-danger 组合使用，
+   组合选择器权重更高（0,2,0），能稳定覆盖上面的默认白底款 */
+.btn-sm.btn-primary { background: var(--primary); color: #fff; }
+.btn-sm.btn-ghost { background: #fff; color: var(--primary); }
+.btn-sm.btn-line { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+.btn-sm.btn-danger { background: #fff; color: var(--danger); border-color: var(--danger); }
+.btn-sm[disabled], .btn-sm.btn-disabled { background: #F2EADC; color: var(--ink-3); border-color: #D8C6AA; }
+
+/* 选择器 / 胶囊（单选控件）：未选中=白底描边，选中=珊瑚实底白字。全站统一用这套视觉 */
+.seg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  line-height: 1;
+  color: var(--ink-2);
+  background: #fff;
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.seg.on { background: var(--primary); color: #fff; }
+
+/* 标签：淡底 + 同色系描边（小元素不用深棕描边，避免过噪） */
+.tag {
+  display: inline-block;
+  padding: 4rpx 14rpx;
+  font-size: 22rpx;
+  border-radius: 10rpx;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border: 2rpx solid var(--primary);
+  margin-right: 8rpx;
+}
+.tag-success { background: #DDF3E6; color: #1F7A50; border-color: var(--success); }
+.tag-warn { background: #FBEBC6; color: #96690A; border-color: var(--warning); }
+.tag-gray { background: #F2EADC; color: var(--text-2); border-color: #D8C6AA; }
+.tag-line { background: #fff; border: 2rpx solid var(--ink-3); color: var(--text-2); }
+.tag-want { background: #FFE3D6; color: var(--primary-dark); border-color: var(--primary); margin-left: 12rpx; vertical-align: middle; }
+.tag-danger { background: #FBE0DC; color: #9E2A1B; border-color: var(--danger); }
+
+.divider { height: 1rpx; background: var(--line); margin: 24rpx 0; }
+.empty {
+  text-align: center; padding: 80rpx 32rpx; color: var(--text-3);
+}
+.empty image { width: 200rpx; height: 200rpx; opacity: .6; }
+.empty .title { margin-top: 24rpx; font-size: 28rpx; }
+.empty .desc { font-size: 24rpx; color: var(--text-3); margin-top: 8rpx; }
+
+.loading {
+  text-align: center; padding: 32rpx; color: var(--text-3); font-size: 24rpx;
+}
+
+.input {
+  background: #fff;
+  border: 3rpx solid var(--ink);
+  border-radius: var(--radius);
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.price { color: var(--primary); font-weight: 600; }
+.price-symbol { font-size: 22rpx; }
+.price-num { font-size: 36rpx; }
+.price-orig { color: var(--text-3); text-decoration: line-through; font-size: 24rpx; margin-left: 8rpx; }
+
+.badge {
+  position: absolute; top: -8rpx; right: -8rpx;
+  min-width: 32rpx; height: 32rpx; line-height: 32rpx;
+  padding: 0 8rpx; border-radius: 16rpx;
+  background: var(--danger); color: #fff; font-size: 20rpx;
+  border: 2rpx solid var(--ink);
+  text-align: center;
+}
+
+.status-bar { height: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ============ 页面根容器基线 ============
+   26 个页面里有 23 个各自写了 `.page`，另外 3 个（agreement / credit / privacy）
+   完全没写 —— 它们的长内容会直接贴到屏幕底边，被 iPhone 的 Home 指示条压住。
+   这类「同一语义在 N 个文件里重复、漏掉一个就出 bug」的样式，
+   必须有一份全局基线兜底，页面里只覆写差异（如加 tabBar 留白、改背景色）。
+   ⚠️ 页面级 .wxss 的 .page 规则优先级更高，覆写仍然生效。 */
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.fixed-bottom {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: #fff; padding: 16rpx 24rpx env(safe-area-inset-bottom) 24rpx;
+  border-top: 4rpx solid var(--ink);
+  display: flex; gap: 16rpx; align-items: center;
+}
+.fixed-bottom .btn { flex: 1; }
+
+.fade-in { animation: fadeIn .25s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8rpx); }
+  to { opacity: 1; transform: none; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #F3E8D6 25%, #FAF3E6 50%, #F3E8D6 75%);
+  background-size: 200% 100%;
+  animation: skeleton 1.2s infinite;
+  border-radius: 8rpx;
+}
+@keyframes skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* 列表卡片下方的并排小按钮（全局复用）：与 btn-sm 同一套视觉，只是等分宽度 */
+.btn-mini {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 16rpx;
+  font-size: 24rpx; font-weight: 500; line-height: 1;
+  color: #fff; background: var(--primary);
+  border: 3rpx solid var(--ink);
+  border-radius: 16rpx;
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.btn-mini-light {
+  color: var(--primary-dark); background: var(--primary-light); border-color: var(--primary);
+}
+
+/* ============ 统一的按压反馈 ============
+   写在最后，保证在层叠中覆盖各变体的 border-width。
+   语义：翘边收平 + 整体位移 4rpx —— 像把贴纸按平。
+   用法：view 上加 hover-class="press"；原生 button 靠 :active 兜底。 */
+.press,
+.btn:active, .btn-sm:active, .btn-mini:active, .seg:active,
+.icon-btn:active, .chip:active, .cat-pill:active {
+  transform: translate(4rpx, 4rpx);
+  border-right-width: 4rpx;
+  border-bottom-width: 4rpx;
+}
+/* 图标类按钮不位移，改为轻微缩小（它们没有翘边，位移会显得"跑偏"） */
+.tap-scale:active, .press-scale:active {
+  transform: scale(0.94);
+}
+/* 整块卡片可点击时的按压反馈（列表项跳转用）：
+   不位移（列表里位移会显得整行在跳），改用轻微缩小 + 透明度 */
+.card-hover { transform: scale(0.985); opacity: 0.9; }

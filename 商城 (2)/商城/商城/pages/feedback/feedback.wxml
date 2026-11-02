@@ -1,0 +1,35 @@
+<view class="page">
+  <nav-bar title="意见反馈" back/>
+  <view class="card">
+    <view class="text-bold mb-16">反馈类型</view>
+    <view class="kind-list">
+      <view wx:for="{{KINDS}}" wx:key="key" class="kind {{kind === item.key ? 'active' : ''}}" bindtap="selectKind" data-k="{{item.key}}">{{item.name}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">反馈内容</view>
+    <textarea class="textarea" placeholder="请描述你的建议或遇到的问题（最多500字）" maxlength="500" value="{{content}}" bindinput="onContent"/>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">联系方式（选填）</view>
+    <input class="input" placeholder="微信/手机号，方便我们回访" maxlength="50" value="{{contact}}" bindinput="onContact"/>
+  </view>
+
+  <view class="card">
+    <view class="text-bold mb-16">截图（选填，最多3张）</view>
+    <view class="image-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="image-remove" catchtap="remove" data-index="{{index}}" hover-class="press" hover-stay-time="80">✕</view>
+      </view>
+      <view wx:if="{{images.length < 3}}" class="image-add" bindtap="choose" hover-class="press" hover-stay-time="80"><text class="plus">+</text></view>
+    </view>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary" bindtap="submit" hover-class="press" hover-stay-time="80">{{submitting ? '提交中…' : '提交反馈'}}</view>
+  </view>
+</view>

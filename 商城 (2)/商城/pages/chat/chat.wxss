@@ -1,0 +1,10 @@
+.page { min-height: 100vh; padding: 16rpx 24rpx calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+.conv-item {
+  /* badge 是绝对定位，必须有定位祖先，否则未读红点会飞到页面右上角 */
+  position: relative;
+  display: flex; align-items: center; gap: 16rpx;
+  margin-bottom: 16rpx;
+  padding: 20rpx;
+}
+.avatar { width: 88rpx; height: 88rpx; border-radius: 50%; background: #f0e4d0; }
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

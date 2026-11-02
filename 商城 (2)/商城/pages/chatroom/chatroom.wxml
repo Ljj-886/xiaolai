@@ -1,0 +1,85 @@
+<view class="page" style="--input-h: {{inputH || 96}}rpx">
+  <nav-bar title="{{title || '聊天'}}" back>
+    <view slot="right" class="nav-actions">
+      <view class="nav-peer" wx:if="{{peerInfo.avatarUrl}}">
+        <image src="{{peerAvatarErr ? defaultAvatar : (peerInfo.avatarUrl || defaultAvatar)}}" class="nav-peer-avatar" binderror="onPeerAvatarErr"/>
+      </view>
+    </view>
+  </nav-bar>
+  <!-- 商品小卡 -->
+  <view class="goods-bar card" bindtap="goGoods" wx:if="{{goods && goods.cover}}">
+    <image src="{{goodsCoverErr ? defaultCover : (goods.cover || defaultCover)}}" mode="aspectFill" class="g-cover" binderror="onGoodsCoverErr"/>
+    <view class="flex-1">
+      <view class="ellipsis text-bold">{{goods.title}}</view>
+      <view class="price price-num" style="margin-top:6rpx">¥{{goods.price}}</view>
+    </view>
+    <view class="text-3">›</view>
+  </view>
+
+  <scroll-view class="msg-list" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
+    <view class="msg {{item.mine ? 'mine' : 'peer'}} {{item.pending ? 'pending' : ''}} {{item.failed ? 'failed' : ''}}" wx:for="{{messages}}" wx:key="_id" id="m-{{item._id}}">
+      <view wx:if="{{item.isImage}}" class="bubble bubble-img">
+        <image wx:if="{{!imgErr[item._id]}}" src="{{item.content}}" mode="widthFix"
+               bindtap="previewMsgImage" data-url="{{item.content}}"
+               binderror="onMsgImgErr" data-id="{{item._id}}"/>
+        <text wx:else class="text-3" style="font-size:24rpx">图片加载失败</text>
+      </view>
+      <view wx:else class="bubble">{{item.content}}</view>
+      <view class="time">{{item.timeText}}<text wx:if="{{item.pending}}" class="msg-state"> · 发送中</text><text wx:elif="{{item.failed}}" class="msg-state msg-failed"> · 发送失败</text></view>
+    </view>
+    <view wx:if="{{!messages.length}}" class="empty-hint">还没有消息，发个招呼吧～</view>
+  </scroll-view>
+
+  <!-- 表情面板 -->
+  <view class="emoji-panel" wx:if="{{showEmoji}}">
+    <view class="emoji-tabs">
+      <text wx:for="{{emojiCats}}" wx:key="key"
+            class="emoji-tab {{emojiCat === item.key ? 'active' : ''}}"
+            bindtap="switchEmojiCat" data-k="{{item.key}}" hover-class="press" hover-stay-time="80">{{item.label}}</text>
+    </view>
+    <scroll-view scroll-y class="emoji-scroll">
+      <view class="emoji-grid">
+        <text wx:for="{{currentEmojis}}" wx:key="*this" class="emoji-item" bindtap="pickEmoji" data-em="{{item}}">{{item}}</text>
+      </view>
+      <view wx:if="{{!currentEmojis.length}}" class="emoji-empty">这个分类还没有表情，发一个试试～</view>
+    </scroll-view>
+    <view class="emoji-tip">提示：小程序无法读取微信聊天框或已下载的表情包，以上是本小程序内置和「你最近发过的」表情</view>
+  </view>
+
+  <!-- "+" 弹出的功能面板（相册 / 拍摄） -->
+  <view class="plus-panel" wx:if="{{showPlus}}">
+    <view class="plus-item" bindtap="onPickFromAlbum" hover-class="press" hover-stay-time="80">
+      <view class="plus-icon">🖼️</view>
+      <text>相册</text>
+    </view>
+    <view class="plus-item" bindtap="onPickFromCamera" hover-class="press" hover-stay-time="80">
+      <view class="plus-icon">📷</view>
+      <text>拍摄</text>
+    </view>
+  </view>
+
+  <!-- 输入栏：仿微信——左侧语音/emoji 切换 + 中间 textarea 自适应高 + 右侧 "+" / 发送 -->
+  <view class="input-bar">
+    <view class="icon-btn" bindtap="toggleEmoji" hover-class="press" hover-stay-time="80">{{showEmoji ? '⌨️' : '😊'}}</view>
+    <textarea class="ipt {{draft && draft.length > 0 ? 'has-text' : ''}}"
+              placeholder="说点什么…"
+              value="{{draft}}"
+              bindinput="onInput"
+              bindfocus="onInputFocus"
+              bindblur="onInputBlur"
+              bindconfirm="send"
+              confirm-type="send"
+              auto-height
+              show-confirm-bar="{{false}}"
+              adjust-position="{{true}}"
+              cursor-spacing="20"
+              maxlength="500"
+              hold-keyboard="{{false}}"/>
+    <block wx:if="{{draft && draft.length > 0}}">
+      <view class="send-btn active" bindtap="send" hover-class="press" hover-stay-time="80">发送</view>
+    </block>
+    <block wx:else>
+      <view class="icon-btn" bindtap="togglePlus" hover-class="press" hover-stay-time="80">{{showPlus ? '×' : '＋'}}</view>
+    </block>
+  </view>
+</view>

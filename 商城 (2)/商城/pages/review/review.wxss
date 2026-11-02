@@ -1,0 +1,30 @@
+.page { min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
+.card { margin: 16rpx 24rpx; }
+
+.stars { display: flex; gap: 12rpx; justify-content: center; padding: 16rpx 0; }
+.star { font-size: 64rpx; color: #e8dcc6; }
+.star.on { color: #FFB020; }
+
+.tag-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.tag-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 28rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1; font-weight: 500;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.tag-pill.active {
+  background: var(--primary); color: #fff;
+  border-color: var(--ink);
+}
+
+.textarea {
+  width: 100%; min-height: 200rpx; font-size: 28rpx; line-height: 1.6;
+}
+
+.bottom-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: #fff;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom)) 24rpx;
+}

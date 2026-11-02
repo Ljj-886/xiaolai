@@ -1,0 +1,38 @@
+# ===== 依赖与构建产物 =====
+node_modules/
+target/
+*.class
+*.jar
+!**/src/**/*.jar
+
+# ===== IDE =====
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# ===== 压缩包 / 安装包（非源码，不入库） =====
+*.zip
+*.7z
+*.rar
+*.tar.gz
+
+# ===== 破解 / 盗版软件（严禁提交，违反 GitHub 服务条款） =====
+Navicat*
+
+# ===== 运行时生成资源（图片落盘目录，非源码） =====
+mall-server/mall-server/uploads/
+mall-server/mall-server/target/
+mall-server/mall-server/.idea/
+uploads/
+商城*/商城/uploads/
+
+# ===== 微信开发者工具本地文件 =====
+project.private.config.json
+miniprogram_npm/
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,128 @@
+<view class="page">
+  <nav-bar title="商品管理" back/>
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{active === item.key ? 'on' : ''}}"
+          bindtap="switchTab" data-tab="{{item.key}}" hover-class="press" hover-stay-time="80">{{item.name}}</view>
+  </scroll-view>
+
+  <view class="search-row">
+    <input class="search-input" placeholder="搜索标题 / 描述 / 原因 / 卖家" value="{{keyword}}"
+           confirm-type="search" bindinput="onKeyword" bindconfirm="onKeyword"/>
+    <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword" hover-class="press" hover-stay-time="80">✕</view>
+  </view>
+
+  <view class="list">
+    <block wx:if="{{list.length}}">
+      <!-- 整卡可点击 → 跳转与首页一致的商品详情页；按钮用 catchtap 阻止冒泡 -->
+      <view wx:for="{{list}}" wx:key="_id" class="card item"
+            bindtap="goDetail" data-id="{{item._id}}" hover-class="card-hover" hover-stay-time="80">
+
+        <!-- ① 身份行：缩略图 + 标题 + 状态 -->
+        <view class="row-head">
+          <view class="thumb-wrap">
+            <image wx:if="{{item.cover}}" class="thumb" src="{{item.cover}}" mode="aspectFill"
+                   catchtap="preview" data-urls="{{item.images}}" data-current="{{item.cover}}"/>
+            <view wx:else class="thumb thumb-empty"><text>{{item.isWant ? '🔍' : '无图'}}</text></view>
+          </view>
+          <view class="head-main">
+            <view class="title-line">
+              <text class="title ellipsis-2">{{item.title}}</text>
+              <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+            </view>
+            <!-- ② 商品属性行：价格 + 分类 + 类型（合并为一行，不重复） -->
+            <view class="attr-line">
+              <text wx:if="{{item.isWant}}" class="attr-price">求购</text>
+              <text wx:elif="{{item.price != null}}" class="attr-price">¥{{item.price}}</text>
+              <text wx:else class="attr-price attr-na">未定价</text>
+              <text wx:if="{{item.isWant && item.price}}" class="attr-sub">预算 ¥{{item.price}}</text>
+              <text wx:if="{{item.categoryText}}" class="attr-sub">{{item.categoryText}}</text>
+              <text wx:if="{{item.campus}}" class="attr-sub">{{item.campus}}</text>
+            </view>
+            <!-- ③ 卖家行：头像 + 昵称 + 信用 + 认证 -->
+            <view class="seller-line">
+              <image class="seller-av" src="{{item.sellerAvatar}}" mode="aspectFill" binderror="onAvatarErr" data-id="{{item._id}}"/>
+              <text class="ellipsis">{{item.seller.nickName || '(已注销)'}}</text>
+              <text class="dot">·</text>
+              <text>信用 {{item.seller.credit == null ? 100 : item.seller.credit}}</text>
+              <text wx:if="{{item.seller.verified}}" class="mini-tag">已认证</text>
+              <text wx:else class="mini-tag mini-tag-warn">未认证</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- ④ 问题区块：为何无法上架（异常态才显示，视觉上高亮） -->
+        <view class="issue" wx:if="{{item.reasonText || item.offTypeText || item.recheck || item.imgCheckText}}">
+          <view class="issue-row" wx:if="{{item.offTypeText}}">
+            <text class="k">来源</text>
+            <text class="v">{{item.offTypeText}}</text>
+          </view>
+          <view class="issue-row" wx:if="{{item.reasonText}}">
+            <text class="k">原因</text>
+            <text class="v v-strong">{{item.reasonText}}</text>
+          </view>
+          <view class="issue-row" wx:if="{{item.auditText}}">
+            <text class="k">操作</text>
+            <text class="v">{{item.auditText}}</text>
+          </view>
+          <view class="issue-row" wx:if="{{item.recheck}}">
+            <text class="k">复核</text>
+            <text class="v"><text class="tag tag-warn">待二次审核</text><text class="ml-8" wx:if="{{item.recheckAtText}}">入队 {{item.recheckAtText}}</text></text>
+          </view>
+          <view class="issue-row" wx:if="{{item.recheckedAtText}}">
+            <text class="k">轨迹</text>
+            <text class="v">{{item.recheckDecisionText || '已复核'}} · {{item.recheckedAtText}}<text wx:if="{{item.recheckedByName}}"> · {{item.recheckedByName}}</text></text>
+          </view>
+          <view class="issue-row" wx:if="{{item.recheckNote}}">
+            <text class="k">备注</text>
+            <text class="v">{{item.recheckNote}}</text>
+          </view>
+          <view class="issue-row" wx:if="{{item.imgCheckText}}">
+            <text class="k">图片</text>
+            <text class="v"><text class="tag {{item.imgCheckCls}}">{{item.imgCheckText}}</text></text>
+          </view>
+        </view>
+
+        <!-- ⑤ 页脚：时间 + 热度（低优先级信息，弱化展示） -->
+        <view class="foot-line">
+          <text>发布 {{item.createdAtText}}</text>
+          <text class="dot">·</text>
+          <text>{{item.viewCount}} 浏览</text>
+          <text class="dot">·</text>
+          <text>{{item.favCount}} 收藏</text>
+          <text wx:if="{{!item.isWant}}" class="dot">·</text>
+          <text wx:if="{{!item.isWant}}">{{item.wantCount}} 想要</text>
+        </view>
+
+        <!-- ⑥ 操作区 -->
+        <view class="actions">
+          <block wx:if="{{item.status === 'pending'}}">
+            <view class="btn-sm btn-ghost" catchtap="reject" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">驳回</view>
+            <view class="btn-sm btn-primary" catchtap="pass" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">通过上架</view>
+          </block>
+          <block wx:elif="{{item.status === 'onSale'}}">
+            <view class="btn-sm btn-ghost" catchtap="off" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">下架</view>
+            <view class="btn-sm btn-danger" catchtap="ban" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">禁售</view>
+          </block>
+          <block wx:elif="{{item.status === 'sold'}}">
+            <text class="text-3 text-sm">已出售，无法下架</text>
+          </block>
+          <block wx:else>
+            <view class="btn-sm btn-primary" catchtap="restore" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">重新上架</view>
+            <block wx:if="{{item.recheck}}">
+              <view class="btn-sm btn-line" catchtap="keepOff" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">维持下架</view>
+              <view class="btn-sm btn-danger" catchtap="recheckBan" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">改判禁售</view>
+            </block>
+            <view wx:elif="{{item.status !== 'banned'}}" class="btn-sm btn-danger" catchtap="ban" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">禁售</view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{!list.length}}" class="empty">
+      <view class="title">{{active === 'pending' ? '暂无待审核商品 🎉' : (active === 'recheck' ? '暂无待二次审核商品 🎉' : '暂无商品')}}</view>
+    </view>
+    <view wx:elif="{{!hasMore}}" class="loading">没有更多了</view>
+  </view>
+</view>

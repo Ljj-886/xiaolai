@@ -1,0 +1,66 @@
+.page { height: calc(100vh - 110rpx - env(safe-area-inset-bottom)); }
+.layout { display: flex; height: 100%; }
+.left {
+  width: 180rpx; background: #fff;
+  border-right: 1rpx solid var(--line);
+  height: 100%;
+}
+.left-item {
+  padding: 32rpx 12rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 8rpx;
+  color: var(--text-2);
+  position: relative;
+  font-size: 24rpx;
+}
+.left-item.active {
+  color: var(--primary); font-weight: 500; background: #fff9ee;
+}
+.left-icon {
+  width: 72rpx; height: 72rpx; border-radius: 22rpx;
+  background: #fff;
+  border: 4rpx solid var(--ink);
+  padding: 7rpx;
+}
+/* 卡通贴纸感：自绘图标 + 轻微倾斜 */
+.left-item:nth-child(1) .left-icon { transform: rotate(-3deg); }
+.left-item:nth-child(2) .left-icon { transform: rotate(2.5deg); }
+.left-item:nth-child(3) .left-icon { transform: rotate(-2deg); }
+.left-item:nth-child(4) .left-icon { transform: rotate(3deg); }
+.left-item:nth-child(5) .left-icon { transform: rotate(-2.5deg); }
+.left-item:nth-child(6) .left-icon { transform: rotate(2deg); }
+.left-item:nth-child(7) .left-icon { transform: rotate(-3deg); }
+.left-item:nth-child(8) .left-icon { transform: rotate(2.5deg); }
+.left-item:nth-child(9) .left-icon { transform: rotate(-2deg); }
+.left-item:nth-child(10) .left-icon { transform: rotate(3deg); }
+
+.left-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%); width: 6rpx; height: 40rpx;
+  background: var(--primary); border-radius: 0 4rpx 4rpx 0;
+}
+
+.right { flex: 1; display: flex; flex-direction: column; height: 100%; min-width: 0; }
+.filter {
+  display: flex; background: #fff;
+  border-bottom: 1rpx solid var(--line);
+}
+.filter-item {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  height: 60rpx; margin: 12rpx 6rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  transition: transform .08s ease, border-width .08s ease, background-color .08s ease;
+}
+.filter-item.active {
+  background: var(--primary); color: #fff; font-weight: 500;
+  border-color: var(--ink);
+}
+.list { flex: 1; }
+.list-wrap { padding: 16rpx; }
+.grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+.grid-cell { width: 100%; }

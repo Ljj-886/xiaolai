@@ -1,0 +1,148 @@
+<view class="page">
+  <nav-bar title="审核中心" back/>
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{active === item.key ? 'on' : ''}}"
+          bindtap="switchTab" data-tab="{{item.key}}" hover-class="press" hover-stay-time="80">{{item.name}}</view>
+  </scroll-view>
+
+  <view class="seg" wx:if="{{active !== 'verify'}}">
+    <view class="seg-item {{archive === 'pending' ? 'on' : ''}}" bindtap="switchArchive" data-archive="pending" hover-class="press" hover-stay-time="80">待处理</view>
+    <view class="seg-item {{archive === 'done' ? 'on' : ''}}" bindtap="switchArchive" data-archive="done" hover-class="press" hover-stay-time="80">已处理</view>
+  </view>
+
+  <view class="list">
+    <!-- 认证审核 -->
+    <block wx:if="{{active === 'verify'}}">
+      <block wx:if="{{list.length}}">
+        <view wx:for="{{list}}" wx:key="_openid" class="card item">
+          <view class="flex-between">
+            <text class="text-bold">{{item.nickName}}</text>
+            <text class="text-3 text-sm">{{item.applyCreatedAtText}}</text>
+          </view>
+          <view class="text-2 mt-8">姓名：{{item.apply.realName}} · 学号：{{item.apply.studentId}}</view>
+          <view class="text-2 mt-8">学校：{{item.apply.school}}</view>
+          <view class="text-2 mt-8" wx:if="{{item.apply.education}}">最高学历：<text class="text-bold">{{item.apply.education}}</text></view>
+          <view class="mt-8">
+            <text wx:if="{{item.apply.autoVerified}}" class="tag tag-success">✓ 自动核验通过</text>
+            <text wx:else class="tag tag-warn">⚠ 自动核验未通过</text>
+            <text wx:if="{{item.apply.resubmit}}" class="tag tag-line ml-8">修改申请</text>
+          </view>
+          <view class="mt-8" wx:if="{{item.apply.evidence.length}}">
+            <image wx:for="{{item.apply.evidence}}" wx:for-item="img" wx:key="*this" src="{{img}}" mode="aspectFill"
+                   class="evi {{imgErr[img] ? 'evi-err' : ''}}"
+                   bindtap="previewEvidence" data-urls="{{item.apply.evidence}}" data-current="{{img}}"
+                   binderror="onEvidenceErr" data-url="{{img}}"/>
+          </view>
+          <view class="actions">
+            <view class="btn-sm btn-ghost" bindtap="reviewVerify" data-openid="{{item._openid}}" data-pass="0" hover-class="press" hover-stay-time="80">驳回</view>
+            <view class="btn-sm btn-primary" bindtap="reviewVerify" data-openid="{{item._openid}}" data-pass="1" hover-class="press" hover-stay-time="80">通过认证</view>
+          </view>
+        </view>
+      </block>
+      <view wx:elif="{{!loading}}" class="empty"><view class="title">暂无待审核认证 🎉</view></view>
+    </block>
+
+    <!-- 举报 -->
+    <block wx:elif="{{active === 'report'}}">
+      <block wx:if="{{list.length}}">
+        <view wx:for="{{list}}" wx:key="_id" class="card item">
+          <view class="flex-between">
+            <text class="text-bold">{{item.reason}}</text>
+            <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+          </view>
+          <view class="text-3 text-sm mt-8">举报人：{{item.reporterNick}} · {{item.createdAtText}}</view>
+
+          <!-- 被举报商品上下文：可点击跳转商品详情页核实（与首页一致） -->
+          <view wx:if="{{item.targetType === 'goods'}}" class="rep-target {{item.canJumpGoods ? 'rep-clickable' : ''}}"
+                bindtap="goGoods" data-id="{{item.targetId}}" hover-class="{{item.canJumpGoods ? 'card-hover' : ''}}" hover-stay-time="80">
+            <image wx:if="{{item.goodsCover}}" class="rep-cover" src="{{imgErr[item.targetId] ? defaultCover : item.goodsCover}}" mode="aspectFill" binderror="onCoverErr" data-id="{{item.targetId}}"/>
+            <view wx:else class="rep-cover rep-cover-empty"><text>{{item.goodsTitle ? '无图' : '—'}}</text></view>
+            <view class="rep-info">
+              <text class="rep-title">{{item.goodsTitle || '（商品已删除）'}}</text>
+              <view class="rep-meta">
+                <text class="tag {{item.goodsStatus === 'off' ? 'tag-gray' : (item.goodsStatus === 'banned' ? 'tag-danger' : 'tag-success')}}">{{item.goodsStatusText || '未知'}}</text>
+                <text wx:if="{{item.goodsSeller}}" class="text-3 text-sm">卖家：{{item.goodsSeller}}</text>
+              </view>
+              <text wx:if="{{item.canJumpGoods}}" class="rep-jump">点击查看商品详情 ›</text>
+            </view>
+          </view>
+          <view wx:else class="rep-target rep-clickable" bindtap="goUser" data-openid="{{item.targetId}}" hover-class="card-hover" hover-stay-time="80">
+            <view class="rep-info">
+              <text class="rep-title">被举报用户：{{item.targetNick || item.targetId}}</text>
+              <text class="rep-jump">点击查看其主页 ›</text>
+            </view>
+          </view>
+
+          <view class="text-2 mt-8">{{item.desc}}</view>
+
+          <!-- 处理轨迹（已处理归档）：结论 + 备注 + 时间 -->
+          <view wx:if="{{archive === 'done' && item.handleResultText}}" class="trail">
+            <view class="trail-row">
+              <text class="trail-k">结论</text>
+              <text class="trail-v">{{item.handleResultText}}</text>
+            </view>
+            <view class="trail-row" wx:if="{{item.handleNote}}">
+              <text class="trail-k">备注</text>
+              <text class="trail-v">{{item.handleNote}}</text>
+            </view>
+            <view class="trail-row" wx:if="{{item.handledAtText}}">
+              <text class="trail-k">时间</text>
+              <text class="trail-v">{{item.handledAtText}}</text>
+            </view>
+            <view class="trail-hint" wx:if="{{item.handleResult === 'off_goods'}}">该商品已进入「商品管理 · 待二次审核」，可复核后重新上架或禁售。</view>
+          </view>
+          <view class="actions" wx:if="{{archive === 'pending'}}">
+            <view class="btn-sm btn-ghost" bindtap="handleReport" data-id="{{item._id}}" data-pass="0" data-action="" hover-class="press" hover-stay-time="80">忽略</view>
+            <view wx:if="{{item.targetType === 'goods'}}" class="btn-sm btn-line" bindtap="handleReport" data-id="{{item._id}}" data-pass="1" data-action="off_goods" hover-class="press" hover-stay-time="80">下架商品</view>
+            <view class="btn-sm btn-primary" bindtap="handleReport" data-id="{{item._id}}" data-pass="1" data-action="ban_user" hover-class="press" hover-stay-time="80">封禁用户</view>
+          </view>
+          <view class="actions" wx:else>
+            <view class="btn-sm btn-line" bindtap="reOpenReport" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">{{item.status === 'rejected' ? '取消驳回' : '重新处理'}}</view>
+          </view>
+        </view>
+      </block>
+      <view wx:elif="{{!loading}}" class="empty"><view class="title">{{archive === 'pending' ? '暂无待处理举报 🎉' : '暂无已处理举报'}}</view></view>
+    </block>
+
+    <!-- 反馈 -->
+    <block wx:else>
+      <block wx:if="{{list.length}}">
+        <view wx:for="{{list}}" wx:key="_id" class="card item">
+          <view class="flex-between">
+            <text class="text-bold">{{item.kindName}} · {{item.nickName}}</text>
+            <text class="tag {{item.statusCls}}">{{item.statusText}}</text>
+          </view>
+          <view class="text-3 text-sm mt-8" wx:if="{{item.school}}">学校：{{item.school}}</view>
+          <view class="text-2 mt-8">{{item.content}}</view>
+          <view class="text-3 text-sm mt-8" wx:if="{{item.contact}}">联系方式：{{item.contact}}</view>
+          <view class="mt-8" wx:if="{{item.images.length}}">
+            <image wx:for="{{item.images}}" wx:for-item="img" wx:key="*this" src="{{img}}" mode="aspectFill"
+                   class="evi {{imgErr[img] ? 'evi-err' : ''}}" binderror="onEvidenceErr" data-url="{{img}}"/>
+          </view>
+          <view class="trail" wx:if="{{archive === 'done' && (item.handlerNote || item.handledAtText)}}">
+            <view class="trail-row" wx:if="{{item.handlerNote}}">
+              <text class="trail-k">备注</text>
+              <text class="trail-v">{{item.handlerNote}}</text>
+            </view>
+            <view class="trail-row" wx:if="{{item.handledAtText}}">
+              <text class="trail-k">时间</text>
+              <text class="trail-v">{{item.handledAtText}}</text>
+            </view>
+          </view>
+          <view class="actions" wx:if="{{archive === 'pending'}}">
+            <view class="btn-sm btn-ghost" bindtap="handleFeedback" data-id="{{item._id}}" data-pass="0" hover-class="press" hover-stay-time="80">忽略</view>
+            <view class="btn-sm btn-primary" bindtap="handleFeedback" data-id="{{item._id}}" data-pass="1" hover-class="press" hover-stay-time="80">已处理</view>
+          </view>
+          <view class="actions" wx:else>
+            <view class="btn-sm btn-line" bindtap="reOpenFeedback" data-id="{{item._id}}" hover-class="press" hover-stay-time="80">二次处理</view>
+          </view>
+        </view>
+      </block>
+      <view wx:elif="{{!loading}}" class="empty"><view class="title">{{archive === 'pending' ? '暂无待处理反馈 🎉' : '暂无已处理反馈'}}</view></view>
+    </block>
+
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:if="{{hasMore && list.length && active !== 'verify'}}" class="loading">上拉加载更多</view>
+  </view>
+</view>

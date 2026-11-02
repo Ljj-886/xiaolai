@@ -1,0 +1,54 @@
+<view class="gc {{layout === 'col' ? 'gc-col' : ''}}" bindtap="onTap">
+  <view class="gc-img-wrap">
+    <!-- 无图求购：求购本就不要求配图，用文字化「求购」卡面代替
+         （不能复用 goods-cover-default 灰色占位图 —— 那看起来像「图片加载失败」） -->
+    <view class="gc-noimg" wx:if="{{noCover && item.type === 'want'}}">
+      <text class="gc-noimg-ico">🔍</text>
+      <text class="gc-noimg-t">求购</text>
+    </view>
+    <!-- src 由 js 统一算好（无封面→占位图）；加载失败（如临时链接 403 过期）由 onImgErr 兜底到占位图 -->
+    <image wx:else class="gc-img" src="{{imgSrc}}" mode="aspectFill" lazy-load binderror="onImgErr"></image>
+    <view class="gc-status" wx:if="{{item.status && item.status !== 'onSale'}}">
+      <text>{{statusText}}</text>
+    </view>
+    <view class="gc-badge" wx:if="{{item.sellerInfo && item.sellerInfo.verified}}">
+      <text>校园认证</text>
+    </view>
+    <!-- 商品认证：该商品图片/信息已通过平台审核（imgCheckStatus='safe'）→ 左下角标 -->
+    <view class="gc-badge gc-badge-goods" wx:if="{{goodsVerified}}">
+      <text>商品认证</text>
+    </view>
+    <!-- 求购徽标：无图求购的卡面已大字写「求购」，不再重复挂角标 -->
+    <view class="gc-badge gc-badge-want" wx:if="{{item.type === 'want' && !noCover}}">
+      <text>求购</text>
+    </view>
+    <view wx:if="{{canReport}}" class="gc-report" catchtap="onReport" hover-class="press" hover-stay-time="80">
+      <text class="gc-report-ico">⚐</text>
+      <text>举报</text>
+    </view>
+  </view>
+  <view class="gc-body">
+    <view class="gc-title ellipsis-2">{{item.title}}</view>
+    <view class="gc-meta">
+      <view class="flex-1">
+        <block wx:if="{{item.type === 'want'}}">
+          <text class="price price-num">求购</text>
+          <text class="text-3 text-sm" wx:if="{{item.price}}">预算 ¥{{item.price}}</text>
+          <text class="text-3 text-sm" wx:else>预算面议</text>
+        </block>
+        <block wx:else>
+          <text class="price price-symbol">¥</text>
+          <text class="price price-num">{{priceRange}}</text>
+        </block>
+      </view>
+    </view>
+    <view class="gc-foot">
+      <!-- 左：成色 + 校区；右：想要热度（闲鱼式「社会证明」，求购商品不展示想要数） -->
+      <view class="flex align-center" style="gap:8rpx;min-width:0">
+        <text class="tag tag-line" wx:if="{{condText}}">{{condText}}</text>
+        <text class="text-3 text-sm ellipsis">{{item.campus || ''}}</text>
+      </view>
+      <text class="gc-want" wx:if="{{showWant}}">🔥{{item.wantCount}}想要</text>
+    </view>
+  </view>
+</view>

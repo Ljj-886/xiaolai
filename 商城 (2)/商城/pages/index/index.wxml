@@ -1,0 +1,69 @@
+<wxs src="../../utils/icon.wxs" module="ico" />
+<view class="page">
+  <!-- 搜索栏 -->
+  <view class="search-bar" bindtap="goSearch">
+    <view class="search-input">
+      <text class="iconfont">🔍</text>
+      <text class="text-3 text-sm" style="margin-left:12rpx">{{school ? school + ' · 搜索同校闲置' : '搜索想要的闲置'}}</text>
+    </view>
+  </view>
+
+  <!-- 轮播图 -->
+  <swiper class="banner" indicator-dots autoplay circular interval="3500">
+    <swiper-item wx:for="{{banners}}" wx:key="id" bindtap="onBanner" data-index="{{index}}">
+      <view class="banner-card" style="background: {{item.bg}}">
+        <view class="banner-title">{{item.title}}</view>
+        <view class="banner-sub">{{item.sub}}</view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 分类入口 -->
+  <view class="cat-grid card">
+    <view class="cat-item" wx:for="{{cats}}" wx:key="key" bindtap="goCategory" data-key="{{item.key}}" data-name="{{item.name}}">
+      <image class="cat-icon" src="{{ico.cat(item.key)}}" mode="aspectFit" style="background-color:{{item.bg}}"/>
+      <text class="text-sm">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 推荐区 -->
+  <view class="section">
+    <view class="section-head">
+      <view class="type-switch">
+        <text class="type-switch-item {{type === 'sell' ? 'active' : ''}}" bindtap="setListType" data-type="sell">闲置</text>
+        <text class="type-switch-item {{type === 'want' ? 'active' : ''}}" bindtap="setListType" data-type="want">求购</text>
+      </view>
+      <text class="text-3 text-sm" bindtap="goCategory" data-key="">查看更多 ›</text>
+    </view>
+    <view wx:if="{{needSchool}}" class="school-tip" bindtap="goChooseSchool">📍 你还没选择学校，当前展示全部商品 · 点此切换到同校</view>
+    <!-- 骨架屏：首次加载且暂无数据时占位，避免白屏，提升首屏"更快"的感知 -->
+    <view class="grid" wx:if="{{loading && !list.length}}">
+      <view class="grid-cell" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="sk-card">
+          <view class="sk-img"></view>
+          <view class="sk-line"></view>
+          <view class="sk-line sk-sm"></view>
+        </view>
+      </view>
+    </view>
+    <view class="grid" wx:else>
+      <view class="grid-cell" wx:for="{{list}}" wx:key="_id">
+        <goods-card item="{{item}}" showReport="{{true}}" myOpenid="{{myOpenid}}" bind:tap="goDetail" bind:report="onReport" data-id="{{item._id}}"/>
+      </view>
+    </view>
+    <view wx:if="{{loadError}}">
+      <empty icon="⚠️" title="加载失败" desc="{{loadError}}" actionText="重试" bind:action="retry"/>
+    </view>
+    <view wx:elif="{{needSchool && !loading && list.length === 0}}">
+      <empty icon="🏫" title="选择你的学校" desc="选择学校后，只看同校同学的商品，自提更方便" actionText="去选择学校" bind:action="goChooseSchool"/>
+    </view>
+    <view wx:elif="{{!loading && list.length === 0}}">
+      <empty icon="🛒" title="还没有商品" desc="成为第一个发布闲置的同学吧" actionText="去发布" bind:action="goPublish"/>
+    </view>
+    <view wx:if="{{loading}}" class="loading">加载中…</view>
+    <view wx:elif="{{hasMore}}" class="loading" bindtap="loadMore">点击加载更多</view>
+    <view wx:elif="{{list.length > 0}}" class="loading">— 没有更多了 —</view>
+  </view>
+
+  <view style="height:40rpx"></view>
+</view>

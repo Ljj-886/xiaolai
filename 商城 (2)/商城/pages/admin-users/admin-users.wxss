@@ -1,0 +1,90 @@
+.page { min-height: 100vh; padding: 16rpx 24rpx env(safe-area-inset-bottom); }
+
+.tabs {
+  white-space: nowrap;
+  background: #F5EADA;
+  border: 3rpx solid var(--ink);
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 16rpx;
+}
+.tab {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 60rpx; padding: 0 30rpx; border-radius: 30rpx;
+  font-size: 26rpx; line-height: 1;
+  color: var(--ink-2); background: #fff;
+  border: 3rpx solid var(--ink);
+  margin-right: 10rpx;
+  transition: transform .08s ease, border-color .08s ease, background-color .08s ease;
+}
+.tab.on { background: var(--primary); color: #fff; font-weight: 500; border-color: var(--ink); }
+
+.list { padding-bottom: 24rpx; }
+.item { margin-bottom: 16rpx; padding: 24rpx; }
+
+/* ① 身份行 */
+.row-head { display: flex; align-items: flex-start; gap: 18rpx; }
+.av {
+  width: 88rpx; height: 88rpx; border-radius: 50%; flex-shrink: 0;
+  background: #F5EADA; border: 3rpx solid var(--ink);
+}
+.head-main { flex: 1; min-width: 0; }
+.name-line { display: flex; align-items: center; gap: 10rpx; flex-wrap: wrap; }
+.name-line .name { font-size: 30rpx; font-weight: 600; color: var(--ink); max-width: 280rpx; }
+.name-line .tag { margin-left: 0; }
+
+/* ② 学校 / 学号 */
+.meta-line {
+  display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap;
+  margin-top: 8rpx; font-size: 24rpx; color: var(--ink-2);
+}
+.meta-line .ellipsis { max-width: 260rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dot { color: var(--ink-3); }
+
+/* 信用分（右侧独立） */
+.credit { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; }
+.credit-num { font-size: 34rpx; font-weight: 700; color: var(--success); line-height: 1.1; }
+.credit-num.credit-low { color: var(--danger); }
+.credit-l { font-size: 20rpx; color: var(--ink-3); }
+
+/* ③ 数据行 */
+.data-line {
+  display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap;
+  margin-top: 16rpx; padding-top: 14rpx; border-top: 2rpx solid var(--line);
+  font-size: 23rpx; color: var(--ink-3);
+}
+.data-n { font-weight: 700; color: var(--ink-2); }
+
+/* ④ 问题区块：封禁 */
+.issue {
+  margin-top: 14rpx; padding: 16rpx 18rpx;
+  background: #FFF8F6; border: 3rpx solid #F3D3C9; border-left-width: 8rpx; border-radius: 12rpx;
+}
+.issue-row { display: flex; gap: 12rpx; align-items: flex-start; font-size: 25rpx; line-height: 1.5; }
+.issue-row + .issue-row { margin-top: 8rpx; }
+.issue-row .k { flex-shrink: 0; width: 72rpx; color: var(--ink-3); }
+.issue-row .v { flex: 1; color: var(--ink-2); word-break: break-all; }
+.issue-row .v-strong { color: #9E2A1B; font-weight: 600; }
+
+/* ⑤ 操作区 */
+.item .actions { display: flex; gap: 16rpx; margin-top: 16rpx; justify-content: flex-end; }
+
+.btn-sm {
+  padding: 8rpx 24rpx; font-size: 24rpx; border-radius: 30rpx; text-align: center;
+  border: 2rpx solid var(--line);
+}
+.btn-sm.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-sm.btn-ghost { background: #fff; color: var(--primary); border-color: var(--primary); }
+.btn-sm.btn-danger { background: #FBE0DC; color: #9E2A1B; border-color: #E8B4A8; }
+
+.tag {
+  display: inline-block; padding: 4rpx 14rpx; border-radius: 8rpx;
+  font-size: 22rpx;
+}
+.tag-success { background: #DEF7F2; color: var(--success); border: 2rpx solid #9FDCD0; }
+.tag-warn { background: #FFF1D6; color: var(--warning); border: 2rpx solid #F0D090; }
+.tag-danger { background: #FBE0DC; color: #9E2A1B; border: 2rpx solid #E8B4A8; }
+
+.empty { text-align: center; padding: 80rpx 32rpx; color: var(--ink-3); }
+.empty .title { font-size: 28rpx; }
+.loading { text-align: center; padding: 24rpx; color: var(--ink-3); font-size: 24rpx; }

@@ -1,0 +1,114 @@
+<view class="page">
+  <nav-bar title="学生认证" back/>
+  <view class="hero card">
+    <view class="emoji-lg">🎓</view>
+    <view class="text-bold text-lg mt-16">校园身份认证</view>
+    <view class="text-2 text-sm mt-8" style="line-height:1.7">
+      <text class="text-bold text-success">审核流程：</text>
+      ① 管理员人工比对学信网截图与填写信息（姓名/学校/学历须一致）；
+      ② 1-2 个工作日内出结果。
+    </view>
+    <view class="text-warn text-sm mt-8">
+      ⚠️ 学信网截图必须能清晰看到「姓名、学校、学历层次」，否则会被驳回。
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-item">
+      <text class="label">真实姓名</text>
+      <input class="ipt" placeholder="与学信网/学生证一致" value="{{form.realName}}" bindinput="onInput" data-k="realName"/>
+    </view>
+    <view class="form-item">
+      <text class="label">学号</text>
+      <input class="ipt" placeholder="请输入学号" value="{{form.studentId}}" bindinput="onInput" data-k="studentId"/>
+    </view>
+    <view class="form-item school-item">
+      <text class="label">学校 <text class="required">*</text></text>
+      <view class="ipt-wrap">
+        <input class="ipt" type="text" placeholder="输入或搜索学校名称" value="{{form.school}}"
+          bindinput="onSchoolInput" bindfocus="onSchoolFocus" bindblur="onSchoolBlur"/>
+        <text wx:if="{{form.school}}" class="ipt-clear" catchtap="clearSchool">✕</text>
+      </view>
+      <view wx:if="{{schoolFocused && schoolSuggestions.length}}" class="suggest">
+        <view wx:for="{{schoolSuggestions}}" wx:key="name" class="suggest-item" bindtap="pickSuggestion" data-name="{{item.name}}" hover-class="suggest-item-hover">
+          <text class="suggest-name">{{item.name}}</text>
+          <text wx:if="{{item.level}}" class="suggest-level">{{item.level}}</text>
+        </view>
+        <view wx:if="{{form.school && !exactMatch}}" class="suggest-item suggest-manual" bindtap="pickManual">
+          <text class="suggest-name">使用「{{form.school}}」（不在列表）</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-item">
+      <text class="label">学历 <text class="required">*</text></text>
+      <view class="ipt edu-trigger {{!form.education ? 'placeholder' : ''}}" bindtap="toggleEdu">{{form.education || '请选择'}}</view>
+      <view wx:if="{{eduOpen}}" class="edu-dropdown">
+        <view wx:for="{{educations}}" wx:key="*this" class="edu-option {{index === educationIndex ? 'edu-option-active' : ''}}" hover-class="edu-option-hover" bindtap="pickEdu" data-idx="{{index}}">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="flex-between">
+      <text class="text-bold">学信网验证截图 <text class="required">*</text></text>
+      <view class="btn-sm btn-line" bindtap="goChsi" hover-class="press" hover-stay-time="80">去学信网生成</view>
+    </view>
+    <view class="text-3 text-sm mt-8" style="line-height:1.6">
+      1. 打开学信网 chsi.com.cn → 「学信档案」登录
+      2. 「在线验证」-「学籍验证」生成报告
+      3. 截图保存到相册（含姓名/学校/学历层次）
+      4. 上传至下方（最多 3 张）
+    </view>
+    <view class="image-grid mt-16">
+      <view wx:for="{{evidence}}" wx:key="*this" class="image-item" bindtap="previewEvidence" data-index="{{index}}">
+        <image src="{{item}}" mode="aspectFill"/>
+        <view class="image-remove" catchtap="removeImg" data-index="{{index}}" hover-class="press" hover-stay-time="80">✕</view>
+      </view>
+      <view wx:if="{{evidence.length < 3}}" class="image-add" bindtap="chooseImg" hover-class="press" hover-stay-time="80">
+        <text class="plus">+</text>
+        <text class="text-sm">添加截图</text>
+      </view>
+    </view>
+    <view class="text-3 text-sm mt-16">最多 3 张。建议上传：在线学籍验证报告 + 学籍信息页。</view>
+  </view>
+
+  <block wx:if="{{user.verified}}">
+    <view class="card">
+      <view class="text-success text-bold">✓ 已通过校园认证</view>
+      <view wx:if="{{user.school}}" class="text-2 mt-8">{{user.school}}<text wx:if="{{user.studentId}}"> · {{user.studentId}}</text></view>
+      <view class="text-3 text-sm mt-8">
+        认证信息如需修改（转本/升学/更正），直接修改下方资料并重新提交即可。
+        重新审核通过前，现有认证保持有效。
+      </view>
+      <view wx:if="{{user.verifyApply && user.verifyApply.status === 'pending'}}" class="text-warn text-sm mt-8">⏳ 你的修改申请正在审核中，请耐心等待。</view>
+    </view>
+  </block>
+  <block wx:else>
+    <view wx:if="{{user.verifyApply && user.verifyApply.status === 'pending'}}">
+      <view class="card">
+        <view class="text-warn text-bold">⏳ 认证审核中</view>
+        <view class="text-2 mt-8">已提交，请耐心等待 1-2 个工作日。如需补充修改，可直接重新提交。</view>
+      </view>
+    </view>
+    <view wx:elif="{{user.verifyApply && user.verifyApply.status === 'rejected'}}">
+      <view class="card">
+        <view class="text-danger text-bold">✗ 认证被驳回</view>
+        <view wx:if="{{user.verifyApply.reason}}" class="text-2 mt-8">原因：{{user.verifyApply.reason}}</view>
+        <view class="text-3 text-sm mt-8">请修改后重新提交（学信网截图必须能完整看到姓名/学校/学历层次）。</view>
+      </view>
+    </view>
+  </block>
+  <view class="card agree-row" bindtap="toggleAgree">
+    <view class="checkbox {{agreed ? 'checked' : ''}}">
+      <text wx:if="{{agreed}}" class="check">✓</text>
+    </view>
+    <view class="flex-1 text-sm text-2" style="line-height:1.7">
+      我已阅读并同意<text class="link" catchtap="goAgreement">《用户协议》</text>与<text class="link" catchtap="goPrivacy">《隐私政策》</text>，并同意平台为核实我的在校学生身份，收集和处理我的姓名、学号、学校、学历及学信网学籍证明截图。
+    </view>
+  </view>
+
+  <view style="height:160rpx"></view>
+  <view class="bottom-bar">
+    <view class="btn btn-primary {{agreed ? '' : 'btn-disabled'}}" bindtap="submit" hover-class="press" hover-stay-time="80">{{user.verified ? '重新提交认证' : (user.verifyApply && user.verifyApply.status === 'pending' ? '重新提交（覆盖上次申请）' : '提交认证')}}</view>
+  </view>
+</view>

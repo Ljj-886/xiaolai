@@ -1,0 +1,110 @@
+<view class="page">
+  <nav-bar title="订单详情" back/>
+  <block wx:if="{{order}}">
+  <view class="status card">
+    <view class="status-text">{{STATUS_ORDER[order.status].text}}</view>
+    <view class="text-3 text-sm mt-8" wx:if="{{order.status === 'pending'}}">等待卖家确认（超时 24 小时自动取消）</view>
+    <view class="text-3 text-sm mt-8" wx:elif="{{order.status === 'meeting'}}">按约定时间到自提点见面交接</view>
+    <view class="text-3 text-sm mt-8" wx:elif="{{order.status === 'completed'}}">订单已完成 {{order.completedAtText}}</view>
+    <view class="text-3 text-sm mt-8" wx:elif="{{order.status === 'cancelled'}}">已取消 {{order.cancelReason || ''}}</view>
+  </view>
+
+  <!-- 商品信息（更全面：封面/标题/价/原价/分类/新旧/描述） -->
+  <view class="card">
+    <view class="text-bold mb-16">商品信息</view>
+    <view class="flex" style="gap:16rpx" bindtap="goGoods">
+      <image src="{{goodsCoverErr ? defaultCover : (order.goodsSnapshot.cover || defaultCover)}}" mode="aspectFill" class="cover" lazy-load binderror="onGoodsCoverErr"/>
+      <view class="flex-1">
+        <view class="ellipsis-2 text-bold">{{order.goodsSnapshot.title}}</view>
+        <view class="price-row mt-8">
+          <text class="price-symbol price">¥</text>
+          <text class="price price-num">{{order.price}}</text>
+          <text class="price-orig" wx:if="{{order.goodsSnapshot.originalPrice}}">原价 ¥{{order.goodsSnapshot.originalPrice}}</text>
+        </view>
+        <view class="meta mt-8">
+          <text class="tag tag-line" wx:if="{{order.goodsSnapshot.condition}}">{{order.goodsSnapshot.condition}}</text>
+          <text class="tag tag-line" wx:if="{{order.goodsSnapshot.category}}">{{order.goodsSnapshot.category}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="desc" wx:if="{{order.goodsSnapshot.desc}}">
+      <view class="text-3 text-sm mb-8">商品描述</view>
+      <view>{{order.goodsSnapshot.desc}}</view>
+    </view>
+  </view>
+
+  <!-- 自提信息 -->
+  <view class="card">
+    <view class="text-bold mb-16">自提信息</view>
+    <view class="kv">
+      <text class="k">自提时间</text>
+      <text class="v">{{order.meetingTime || '待约定'}}</text>
+    </view>
+    <view class="kv">
+      <text class="k">自提点</text>
+      <text class="v">{{order.meetingPlace || '待约定'}}</text>
+    </view>
+    <view class="kv" wx:if="{{order.message}}">
+      <text class="k">买家留言</text>
+      <text class="v">{{order.message}}</text>
+    </view>
+  </view>
+
+  <!-- 对方信息 -->
+  <view class="card">
+    <view class="text-bold mb-16">{{isBuyer ? '卖家' : '买家'}}信息</view>
+    <view class="peer-row" bindtap="goPeer">
+      <image src="{{peerAvatarErr ? defaultAvatar : (peerInfo.avatarUrl || defaultAvatar)}}" mode="aspectFill" class="avatar" binderror="onPeerAvatarErr"/>
+      <view class="flex-1">
+        <view class="flex" style="align-items:center;gap:8rpx">
+          <text class="text-bold">{{peerInfo.nickName}}</text>
+          <text class="tag tag-success" wx:if="{{peerInfo.verified}}">校园认证</text>
+        </view>
+        <view class="text-3 text-sm mt-8">信用 {{peerInfo.credit || 100}}</view>
+        <view class="text-3 text-sm mt-8" wx:if="{{peerInfo.school}}">学校：{{peerInfo.school}}</view>
+      </view>
+      <text class="text-3" style="margin-right:8rpx">›</text>
+      <view class="btn-sm btn-line" wx:if="{{order.status === 'meeting' || order.status === 'pending'}}" catchtap="goChat" hover-class="press" hover-stay-time="80">联系{{isBuyer ? '卖家' : '买家'}}</view>
+    </view>
+  </view>
+
+  <!-- 预约信息（包含提交时间） -->
+  <view class="card">
+    <view class="text-bold mb-16">预约信息</view>
+    <view class="kv"><text class="k">预约单号</text><text class="v">{{order.orderNo}}</text></view>
+    <view class="kv"><text class="k">提交时间</text><text class="v">{{order.createdAtText}}</text></view>
+    <view class="kv" wx:if="{{order.sellerConfirmAt}}"><text class="k">卖家确认时间</text><text class="v">{{order.sellerConfirmAtText}}</text></view>
+    <view class="kv" wx:if="{{order.completedAt}}"><text class="k">完成时间</text><text class="v">{{order.completedAtText}}</text></view>
+    <view class="kv" wx:if="{{order.cancelledAt || (order.status === 'cancelled' && order.updatedAt)}}"><text class="k">取消时间</text><text class="v">{{order.cancelledAtText}}</text></view>
+  </view>
+
+  <view wx:if="{{order.buyerReview || order.sellerReview}}" class="card">
+    <view class="text-bold mb-16">评价信息</view>
+    <view wx:if="{{order.buyerReview}}" class="review">
+      <text class="text-3 text-sm">买家评价：</text>
+      <text class="ml-8">{{order.buyerReview.content || '（仅打分）'}}</text>
+      <text class="text-warning ml-8">★ {{order.buyerReview.score}}</text>
+    </view>
+    <view wx:if="{{order.sellerReview}}" class="review mt-8">
+      <text class="text-3 text-sm">卖家评价：</text>
+      <text class="ml-8">{{order.sellerReview.content || '（仅打分）'}}</text>
+      <text class="text-warning ml-8">★ {{order.sellerReview.score}}</text>
+    </view>
+  </view>
+
+  <view style="height:200rpx"></view>
+
+  <view class="bottom-bar" wx:if="{{showBottomBar}}">
+    <view wx:if="{{isBuyer && order.status === 'pending'}}" class="btn btn-ghost" bindtap="cancel" hover-class="press" hover-stay-time="80">取消订单</view>
+    <view wx:if="{{order.status === 'meeting'}}" class="btn btn-primary" bindtap="complete" hover-class="press" hover-stay-time="80">确认完成</view>
+    <view wx:if="{{isSeller && order.status === 'pending'}}" class="btn btn-ghost" bindtap="reject" hover-class="press" hover-stay-time="80">拒绝</view>
+    <view wx:if="{{isSeller && order.status === 'pending'}}" class="btn btn-primary" bindtap="accept" hover-class="press" hover-stay-time="80">接受</view>
+    <!-- 商家在确认后（meeting 状态）仍可主动取消 -->
+    <view wx:if="{{isSeller && order.status === 'meeting'}}" class="btn btn-ghost" bindtap="sellerCancel" hover-class="press" hover-stay-time="80">取消订单</view>
+    <view wx:if="{{order.status === 'completed' && !((isBuyer && order.buyerReview) || (!isBuyer && order.sellerReview))}}" class="btn btn-primary" bindtap="goReview" hover-class="press" hover-stay-time="80">评价</view>
+  </view>
+  </block>
+  <block wx:else>
+    <empty icon="📭" title="订单不存在或已被删除" actionText="返回订单列表" bind:action="goOrderList"/>
+  </block>
+</view>
